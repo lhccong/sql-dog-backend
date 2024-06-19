@@ -2,7 +2,7 @@
 # @author <a href="https://github.com/lhccong">程序员聪</a>
 spring:
   application:
-    name: sql_dog_backend
+    name: sql-dog-backend
   # 默认 dev 环境
   profiles:
     active: dev

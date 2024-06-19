@@ -12,9 +12,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cong</groupId>
-    <artifactId>sql_dog_backend</artifactId>
+    <artifactId>sql-dog-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>sql_dog_backend</name>
+    <name>sql-dog-backend</name>
     <properties>
         <java.version>1.8</java.version>
     </properties>
