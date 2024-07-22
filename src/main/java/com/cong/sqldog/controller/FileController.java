@@ -11,11 +11,13 @@ import com.cong.sqldog.model.dto.file.UploadFileRequest;
 import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.enums.FileUploadBizEnum;
 import com.cong.sqldog.service.UserService;
+
 import java.io.File;
 import java.util.Arrays;
-import javax.annotation.Resource;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/file")
 @Slf4j
-@Api(tags = "文件")
+@Tag(name = "文件")
 public class FileController {
 
     @Resource
@@ -49,9 +51,9 @@ public class FileController {
      * @return {@link BaseResponse}<{@link String}>
      */
     @PostMapping("/upload")
-    @ApiOperation(value = "文件上传")
+    @Operation(summary = "文件上传")
     public BaseResponse<String> uploadFile(@RequestPart("file") MultipartFile multipartFile,
-            UploadFileRequest uploadFileRequest) {
+                                           UploadFileRequest uploadFileRequest) {
         String biz = uploadFileRequest.getBiz();
         FileUploadBizEnum fileUploadBizEnum = FileUploadBizEnum.getEnumByValue(biz);
         if (fileUploadBizEnum == null) {
@@ -91,7 +93,7 @@ public class FileController {
      * @param fileUploadBizEnum 业务类型
      * @param multipartFile     multipart 文件
      */
-    @ApiOperation(value = "校验文件")
+    @Operation(summary = "校验文件")
     private void validFile(MultipartFile multipartFile, FileUploadBizEnum fileUploadBizEnum) {
         // 文件大小
         long fileSize = multipartFile.getSize();

@@ -37,7 +37,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * 用户服务实现
@@ -266,7 +266,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 获取用户信息
         AuthUser authUser = (AuthUser) response.getData();
         if (authUser == null) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"Github 登录失败，获取用户信息失败");
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "Github 登录失败，获取用户信息失败");
         }
         //判断用户是否存在
         String userAccount = authUser.getUsername();
@@ -277,13 +277,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             saveGithubUser(userAccount, authUser);
         }
         //2、用户存在，则登录
-        return this.userLogin(userAccount, authUser.getUuid()+authUser.getUsername());
+        return this.userLogin(userAccount, authUser.getUuid() + authUser.getUsername());
     }
 
     private void saveGithubUser(String userAccount, AuthUser authUser) {
         User user;
         user = new User();
-        String defaultPassword = authUser.getUuid()+authUser.getUsername();
+        String defaultPassword = authUser.getUuid() + authUser.getUsername();
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + defaultPassword).getBytes());
         user.setUserPassword(encryptPassword);
         user.setUserAccount(userAccount);

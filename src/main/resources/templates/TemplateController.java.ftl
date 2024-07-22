@@ -22,8 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * ${dataName}接口
@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/${dataKey}")
 @Slf4j
-@Api(tags = "${dataName}接口")
+@Tag(name = "${dataName}接口")
 public class ${upperDataKey}Controller {
 
     @Resource
@@ -52,7 +52,7 @@ public class ${upperDataKey}Controller {
      * @return {@link BaseResponse }<{@link Long }>
      */
     @PostMapping("/add")
-    @ApiOperation(value = "创建${dataName}")
+    @Operation(summary = "创建${dataName}")
     public BaseResponse<Long> add${upperDataKey}(@RequestBody ${upperDataKey}AddRequest ${dataKey}AddRequest) {
         ThrowUtils.throwIf(${dataKey}AddRequest == null, ErrorCode.PARAMS_ERROR);
         // todo 在此处将实体类和 DTO 进行转换
@@ -78,7 +78,7 @@ public class ${upperDataKey}Controller {
      * @return {@link BaseResponse }<{@link Boolean }>
      */
     @PostMapping("/delete")
-    @ApiOperation(value = "删除${dataName}")
+    @Operation(summary = "删除${dataName}")
     public BaseResponse<Boolean> delete${upperDataKey}(@RequestBody DeleteRequest deleteRequest) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -105,7 +105,7 @@ public class ${upperDataKey}Controller {
      * @return {@link BaseResponse }<{@link Boolean }>
      */
     @PostMapping("/update")
-    @ApiOperation(value = "更新${dataName}（仅管理员可用）")
+    @Operation(summary = "更新${dataName}（仅管理员可用）")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> update${upperDataKey}(@RequestBody ${upperDataKey}UpdateRequest ${dataKey}UpdateRequest) {
         if (${dataKey}UpdateRequest == null || ${dataKey}UpdateRequest.getId() <= 0) {
@@ -133,7 +133,7 @@ public class ${upperDataKey}Controller {
      * @return {@link BaseResponse }<{@link ${upperDataKey}VO }>
      */
     @GetMapping("/get/vo")
-    @ApiOperation(value = "根据 id 获取${dataName}（封装类）")
+    @Operation(summary = "根据 id 获取${dataName}（封装类）")
     public BaseResponse<${upperDataKey}VO> get${upperDataKey}VOById(long id) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         // 查询数据库
@@ -151,7 +151,7 @@ public class ${upperDataKey}Controller {
      */
     @PostMapping("/list/page")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
-    @ApiOperation(value = "分页获取${dataName}列表（仅管理员可用）")
+    @Operation(summary = "分页获取${dataName}列表（仅管理员可用）")
     public BaseResponse<Page<${upperDataKey}>> list${upperDataKey}ByPage(@RequestBody ${upperDataKey}QueryRequest ${dataKey}QueryRequest) {
         long current = ${dataKey}QueryRequest.getCurrent();
         long size = ${dataKey}QueryRequest.getPageSize();
@@ -168,7 +168,7 @@ public class ${upperDataKey}Controller {
      * @return {@link BaseResponse }<{@link Page }<{@link ${upperDataKey}VO }>>
      */
     @PostMapping("/list/page/vo")
-    @ApiOperation(value = "分页获取${dataName}列表（封装类）")
+    @Operation(summary = "分页获取${dataName}列表（封装类）")
     public BaseResponse<Page<${upperDataKey}VO>> list${upperDataKey}VOByPage(@RequestBody ${upperDataKey}QueryRequest ${dataKey}QueryRequest) {
         long current = ${dataKey}QueryRequest.getCurrent();
         long size = ${dataKey}QueryRequest.getPageSize();
@@ -188,7 +188,7 @@ public class ${upperDataKey}Controller {
      * @return {@link BaseResponse }<{@link Page }<{@link ${upperDataKey}VO }>>
      */
     @PostMapping("/my/list/page/vo")
-    @ApiOperation(value = "分页获取当前登录用户创建的${dataName}列表")
+    @Operation(summary = "分页获取当前登录用户创建的${dataName}列表")
     public BaseResponse<Page<${upperDataKey}VO>> listMy${upperDataKey}VOByPage(@RequestBody ${upperDataKey}QueryRequest ${dataKey}QueryRequest) {
         ThrowUtils.throwIf(${dataKey}QueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
@@ -212,7 +212,7 @@ public class ${upperDataKey}Controller {
      * @return {@link BaseResponse }<{@link Boolean }>
      */
     @PostMapping("/edit")
-    @ApiOperation(value = "编辑${dataName}（给用户使用）")
+    @Operation(summary = "编辑${dataName}（给用户使用）")
     public BaseResponse<Boolean> edit${upperDataKey}(@RequestBody ${upperDataKey}EditRequest ${dataKey}EditRequest) {
         if (${dataKey}EditRequest == null || ${dataKey}EditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

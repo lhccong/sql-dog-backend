@@ -22,10 +22,10 @@ import com.cong.sqldog.model.vo.UserVO;
 import com.cong.sqldog.service.UserService;
 
 import java.util.List;
-import javax.annotation.Resource;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthCallback;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +46,7 @@ import static com.cong.sqldog.constant.SystemConstants.SALT;
 @RestController
 @RequestMapping("/user")
 @Slf4j
-@Api(tags = "用户相关")
+@Tag(name = "用户相关")
 public class UserController {
 
     @Resource
@@ -61,7 +61,7 @@ public class UserController {
      * @return {@link BaseResponse}<{@link Long}>
      */
     @PostMapping("/register")
-    @ApiOperation(value = "用户注册")
+    @Operation(summary = "用户注册")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
         if (userRegisterRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -83,7 +83,7 @@ public class UserController {
      * @return {@link BaseResponse}<{@link LoginUserVO}>
      */
     @PostMapping("/login")
-    @ApiOperation(value = "用户登录")
+    @Operation(summary = "用户登录")
     public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest) {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -99,14 +99,15 @@ public class UserController {
 
     /**
      * 用户通过 GitHub 登录
+     *
      * @param callback 回调
      * @return {@link BaseResponse}<{@link TokenLoginUserVo}>
      */
     @PostMapping("/login/github")
-    @ApiOperation(value = "用户GitHub登录")
+    @Operation(summary = "用户GitHub登录")
     public BaseResponse<TokenLoginUserVo> userLoginByGithub(AuthCallback callback) {
         if (callback.getCode() == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"Github 登录失败，code 为空");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "Github 登录失败，code 为空");
         }
         TokenLoginUserVo tokenLoginUserVo = userService.userLoginByGithub(callback);
         return ResultUtils.success(tokenLoginUserVo);
@@ -119,7 +120,7 @@ public class UserController {
      * @return {@link BaseResponse}<{@link Boolean}>
      */
     @PostMapping("/logout")
-    @ApiOperation(value = "用户注销")
+    @Operation(summary = "用户注销")
     public BaseResponse<Boolean> userLogout() {
 
         boolean result = userService.userLogout();
@@ -132,7 +133,7 @@ public class UserController {
      * @return {@link BaseResponse}<{@link LoginUserVO}>
      */
     @GetMapping("/get/login")
-    @ApiOperation(value = "获取当前登录用户")
+    @Operation(summary = "获取当前登录用户")
     public BaseResponse<LoginUserVO> getLoginUser() {
         User user = userService.getLoginUser();
         return ResultUtils.success(userService.getLoginUserVO(user));
@@ -150,7 +151,7 @@ public class UserController {
      */
     @PostMapping("/add")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
-    @ApiOperation(value = "创建用户")
+    @Operation(summary = "创建用户")
     public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest) {
         if (userAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -174,7 +175,7 @@ public class UserController {
      */
     @PostMapping("/delete")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
-    @ApiOperation(value = "删除用户")
+    @Operation(summary = "删除用户")
     public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -191,7 +192,7 @@ public class UserController {
      */
     @PostMapping("/update")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
-    @ApiOperation(value = "更新用户")
+    @Operation(summary = "更新用户")
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -211,7 +212,7 @@ public class UserController {
      */
     @GetMapping("/get")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
-    @ApiOperation(value = "根据 id 获取用户（仅管理员）")
+    @Operation(summary = "根据 id 获取用户（仅管理员）")
     public BaseResponse<User> getUserById(long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -228,7 +229,7 @@ public class UserController {
      * @return {@link BaseResponse}<{@link UserVO}>
      */
     @GetMapping("/get/vo")
-    @ApiOperation(value = "根据 id 获取包装类")
+    @Operation(summary = "根据 id 获取包装类")
     public BaseResponse<UserVO> getUserVoById(long id) {
         BaseResponse<User> response = getUserById(id);
         User user = response.getData();
@@ -243,7 +244,7 @@ public class UserController {
      */
     @PostMapping("/list/page")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
-    @ApiOperation(value = "分页获取用户列表（仅管理员）")
+    @Operation(summary = "分页获取用户列表（仅管理员）")
     public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest) {
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
@@ -259,7 +260,7 @@ public class UserController {
      * @return {@link BaseResponse}<{@link Page}<{@link UserVO}>>
      */
     @PostMapping("/list/page/vo")
-    @ApiOperation(value = "分页获取用户封装列表")
+    @Operation(summary = "分页获取用户封装列表")
     public BaseResponse<Page<UserVO>> listUserVoByPage(@RequestBody UserQueryRequest userQueryRequest) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -285,7 +286,7 @@ public class UserController {
      * @return {@link BaseResponse}<{@link Boolean}>
      */
     @PostMapping("/update/my")
-    @ApiOperation(value = "更新个人信息")
+    @Operation(summary = "更新个人信息")
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest) {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

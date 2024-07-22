@@ -1,17 +1,17 @@
 package com.cong.sqldog.service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
  * 用户服务测试
- *
+ * <p>
  * # @author <a href="https://github.com/lhccong">程序员聪</a>
  */
 @SpringBootTest
-public class UserServiceTest {
+class UserServiceTest {
 
     @Resource
     private UserService userService;

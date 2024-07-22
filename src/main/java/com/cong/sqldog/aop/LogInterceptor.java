@@ -1,7 +1,8 @@
 package com.cong.sqldog.aop;
 
 import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -15,7 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * 请求响应日志 AOP
- *
+ * <p>
  * # @author <a href="https://github.com/lhccong">程序员聪</a>
  **/
 @Aspect

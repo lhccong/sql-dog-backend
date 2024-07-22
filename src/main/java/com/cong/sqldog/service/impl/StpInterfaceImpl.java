@@ -10,7 +10,8 @@ import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.service.UserService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,19 +24,20 @@ public class StpInterfaceImpl implements StpInterface {
 
     @Resource
     private UserService userService;
+
     /**
-     * 返回一个账号所拥有的权限码集合 
+     * 返回一个账号所拥有的权限码集合
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-         //TODO 待做
+        //TODO 待做
         // 本 list 仅做模拟，实际项目中要根据具体业务逻辑来查询权限
         List<String> list = new ArrayList<>();
         list.add("101");
         list.add("user.add");
         list.add("user.update");
         list.add("user.get");
-         list.add("user.delete");
+        list.add("user.delete");
         list.add("art.*");
         return list;
     }
