@@ -10,7 +10,6 @@ import com.cong.sqldog.model.vo.UserVO;
 
 import java.util.List;
 
-import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.zhyd.oauth.model.AuthCallback;
 
 /**
@@ -38,14 +37,6 @@ public interface UserService extends IService<User> {
      */
     LoginUserVO userLogin(String userAccount, String userPassword);
 
-    /**
-     * 用户通过 MP Open 登录
-     * 用户登录（微信开放平台）
-     *
-     * @param wxOauth2UserInfo 从微信获取的用户信息
-     * @return 脱敏后的用户信息
-     */
-    LoginUserVO userLoginByMpOpen(WxOAuth2UserInfo wxOauth2UserInfo);
 
     /**
      * 获取当前登录用户
