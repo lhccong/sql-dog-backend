@@ -8,11 +8,12 @@ spring:
     password: root
   # Redis 配置
   # todo 需替换配置，然后取消注释
-  redis:
-    database: 1
-    host: localhost
-    port: 6379
-    timeout: 5000
+  data:
+    redis:
+      database: 1
+      host: localhost
+      port: 6379
+      timeout: 5000
 #    password: 123456
 # 对象存储
 # todo 需替换配置

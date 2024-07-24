@@ -112,7 +112,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         // 3. 记录用户的登录态
-        // 3. 记录用户的登录态
         StpUtil.login(user.getId());
         StpUtil.getTokenSession().set(SystemConstants.USER_LOGIN_STATE, user);
         return this.getTokenLoginUserVO(user);
@@ -231,7 +230,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (CollUtil.isEmpty(userList)) {
             return new ArrayList<>();
         }
-        return userList.stream().map(this::getUserVO).collect(Collectors.toList());
+        return userList.stream().map(this::getUserVO).toList();
     }
 
     @Override
