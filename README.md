@@ -15,3 +15,8 @@
 ## 项目介绍🚀
 
 SQL Dog 是一款基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于 SQL 刷题、SQL 解析，帮助人们解决 SQL 能力薄弱问题，帮助每个人成为 SQL 宗师🚀。
+
+## 架构设计图🎨
+<p align="center">
+    <img src="./doc/img/projectImg.png" width="780" />
+</p>
