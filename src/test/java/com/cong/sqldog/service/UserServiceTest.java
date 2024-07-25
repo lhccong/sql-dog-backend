@@ -1,5 +1,6 @@
 package com.cong.sqldog.service;
 
+import com.cong.sqldog.common.TestBase;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * <p>
  * # @author <a href="https://github.com/lhccong">程序员聪</a>
  */
-@SpringBootTest
-class UserServiceTest {
+class UserServiceTest extends TestBase {
 
     @Resource
     private UserService userService;
@@ -24,11 +24,12 @@ class UserServiceTest {
         try {
             long result = userService.userRegister(userAccount, userPassword, checkPassword);
             Assertions.assertEquals(-1, result);
-            userAccount = "yu";
+            userAccount = "cg";
             result = userService.userRegister(userAccount, userPassword, checkPassword);
             Assertions.assertEquals(-1, result);
         } catch (Exception e) {
 
         }
     }
+
 }

@@ -1,8 +1,3 @@
-# 测试配置文件
-# @author <a href="https://github.com/lhccong">程序员聪</a>
-#  
-server:
-  port: 8101
 spring:
   # 数据库配置
   # todo 需替换配置
@@ -12,14 +7,50 @@ spring:
     username: test
     password: test
   # Redis 配置
-  # todo 需替换配置
+  # todo 需替换配置，然后取消注释
   data:
     redis:
       database: 1
       host: localhost
       port: 6379
       timeout: 5000
-  sql:
-    init:
-      schema-locations: classpath:db/schema.sql
-      data-locations: classpath:db/data.sql
+# 对象存储
+# todo 需替换配置
+cos:
+  client:
+    accessKey: xxx
+    secretKey: xxx
+    region: xxx
+    bucket: xxx
+##登录相关
+############### Github 配置 ##############
+github:
+  client-id: xxx
+  client-secret: xxx
+  redirect-uri: xxx
+############### Sa-Token 配置 (文档: https://sa-token.cc) ##############
+sa-token:
+  # token 名称（同时也是 cookie 名称）
+  token-name: sql-dog-token
+  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
+  timeout: 2592000
+  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
+  active-timeout: -1
+  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
+  is-share: true
+  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
+  token-style: tik
+  # 是否输出操作日志
+  is-log: true
+sql:
+  slow:
+    mirror:
+      analysisSwitch: true #是否开启 SQL 分析
+      #      onlyCheckOnce: true  #是否只分析一次
+      #      checkInterval: 300000  #分析间隔 只有 onlyCheckOnce 为 false 的时候才有效
+      ##      exceptSqlIds: com.cong.example.mapper.TaskMapper.selectList,com.cong.example.mapper.TaskMapper.xxx #不需要分析的 SQL ID
+      #      sqlType: SELECT,UPDATE #拦截的 SQL 类型
+      #      outModel: LOG #日志模型 默认就是系统的 log 打印
+      outputClass: com.cong.sqldog.out.MySqlScoreResultOutService #要自定义输出的时候再打开
