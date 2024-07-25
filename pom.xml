@@ -17,6 +17,7 @@
     <name>sql-dog-backend</name>
     <properties>
         <java.version>17</java.version>
+        <easy.rule.version>4.1.0</easy.rule.version>
     </properties>
     <dependencies>
         <dependency>
@@ -89,7 +90,18 @@
             <artifactId>JustAuth</artifactId>
             <version>1.16.6</version>
         </dependency>
-
+        <!-- easyRule start-->
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-rules-core</artifactId>
+            <version>${easy.rule.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-rules-mvel</artifactId>
+            <version>${easy.rule.version}</version>
+        </dependency>
+        <!-- easyRule end-->
         <!-- https://hutool.cn/docs/index.html#/-->
         <dependency>
             <groupId>cn.hutool</groupId>
