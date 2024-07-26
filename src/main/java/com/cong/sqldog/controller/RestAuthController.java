@@ -5,6 +5,7 @@ import com.cong.sqldog.config.GitHubConfig;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import me.zhyd.oauth.request.AuthRequest;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,12 +17,12 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/oauth")
-@Tag(name = "Github 登录相关")
+//@Tag(name = "Github 登录相关")
 public class RestAuthController {
     @Resource
     private GitHubConfig gitHubConfig;
 
-    @RequestMapping("/render")
+    @GetMapping("/render")
     @Operation(summary = "获取GitHub授权地址重定向")
     public void renderAuth(HttpServletResponse response) throws IOException {
         AuthRequest authRequest = gitHubConfig.getAuthRequest();

@@ -17,6 +17,11 @@ public interface SystemConstants {
      */
     String SALT = "cong";
 
+    /**
+     * 验证码前缀
+     */
+    String SQL_DOG = "sqlDog-";
+
 
 }
 

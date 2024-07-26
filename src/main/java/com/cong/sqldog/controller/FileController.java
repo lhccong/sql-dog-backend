@@ -33,7 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/file")
 @Slf4j
-@Tag(name = "文件")
+//@Tag(name = "文件")
 public class FileController {
 
     @Resource

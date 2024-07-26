@@ -1,6 +1,7 @@
 package com.cong.sqldog.model.dto.user;
 
 import java.io.Serializable;
+
 import lombok.Data;
 
 /**
@@ -17,4 +18,8 @@ public class UserRegisterRequest implements Serializable {
     private String userPassword;
 
     private String checkPassword;
+
+    private String verKey;
+
+    private String verCode;
 }

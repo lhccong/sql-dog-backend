@@ -157,6 +157,11 @@
             </exclusions>
         </dependency>
         <!---========================单元测试配置====================-->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>1.6.2</version>
+        </dependency>
     </dependencies>
 
     <build>

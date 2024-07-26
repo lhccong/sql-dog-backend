@@ -6,6 +6,7 @@ import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
+import com.cong.sqldog.constant.SystemConstants;
 import com.cong.sqldog.constant.UserConstant;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.exception.ThrowUtils;
@@ -16,20 +17,32 @@ import com.cong.sqldog.model.dto.user.UserRegisterRequest;
 import com.cong.sqldog.model.dto.user.UserUpdateMyRequest;
 import com.cong.sqldog.model.dto.user.UserUpdateRequest;
 import com.cong.sqldog.model.entity.User;
+import com.cong.sqldog.model.vo.CaptchaVO;
 import com.cong.sqldog.model.vo.LoginUserVO;
 import com.cong.sqldog.model.vo.TokenLoginUserVo;
 import com.cong.sqldog.model.vo.UserVO;
 import com.cong.sqldog.service.UserService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
+import com.cong.sqldog.utils.IdWorkerUtil;
+import com.wf.captcha.SpecCaptcha;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthCallback;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,11 +59,15 @@ import static com.cong.sqldog.constant.SystemConstants.SALT;
 @RestController
 @RequestMapping("/user")
 @Slf4j
-@Tag(name = "用户相关")
+//@Tag(name = "用户相关")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Resource
-    private UserService userService;
+    private final UserService userService;
+
+    private final StringRedisTemplate redisTemplate;
+
+    private final IdWorkerUtil idWorkerUtil;
 
     // region 登录相关
 
@@ -66,6 +83,15 @@ public class UserController {
         if (userRegisterRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        String redisCode = redisTemplate.opsForValue().get(userRegisterRequest.getVerKey());
+        String verCode = userRegisterRequest.getVerCode();
+
+        if (verCode == null || !Objects.equals(redisCode, verCode.trim().toLowerCase())) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "验证码不正确");
+        }
+        //删除验证码
+        redisTemplate.delete(userRegisterRequest.getVerKey());
+
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
@@ -298,5 +324,19 @@ public class UserController {
         boolean result = userService.updateById(user);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
+    }
+
+    @GetMapping("/captcha")
+    @Operation(summary = "获取验证码")
+    public BaseResponse<CaptchaVO> captcha() {
+        SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
+        String verCode = specCaptcha.text().toLowerCase();
+        String key = String.valueOf(idWorkerUtil.nextId());
+        // 存入redis并设置过期时间为5分钟
+        redisTemplate.opsForValue().set(SystemConstants.SQL_DOG + key, verCode, 5, TimeUnit.MINUTES);
+        CaptchaVO captchaVO = new CaptchaVO().setKey(SystemConstants.SQL_DOG + key).setCode(specCaptcha.toBase64());
+
+        // 将key和base64返回给前端
+        return ResultUtils.success(captchaVO);
     }
 }
