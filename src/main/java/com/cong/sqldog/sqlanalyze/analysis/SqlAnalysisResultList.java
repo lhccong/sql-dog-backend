@@ -16,6 +16,11 @@ import java.util.List;
 public class SqlAnalysisResultList {
 
     /**
+     * SQL格式
+     */
+    private String sql;
+
+    /**
      * 分析结果集合
      */
     private List<SqlAnalysisResult> resultList;
