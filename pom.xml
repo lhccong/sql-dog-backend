@@ -157,6 +157,12 @@
             </exclusions>
         </dependency>
         <!---========================单元测试配置====================-->
+        <!--   滑动验证码 http://doc.captcha.tianai.cloud/-->
+        <dependency>
+            <groupId>cloud.tianai.captcha</groupId>
+            <artifactId>tianai-captcha-springboot-starter</artifactId>
+            <version>1.5.0</version>
+        </dependency>
     </dependencies>
 
     <build>
