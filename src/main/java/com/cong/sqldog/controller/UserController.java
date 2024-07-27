@@ -76,6 +76,9 @@ public class UserController {
         if (userRegisterRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        if (userRegisterRequest.getVerKey() == null || Boolean.FALSE.equals(redisTemplate.hasKey(userRegisterRequest.getVerKey()))) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "验证码不正确");
+        }
         String redisCode = redisTemplate.opsForValue().get(userRegisterRequest.getVerKey());
         String verCode = userRegisterRequest.getVerCode();
 
