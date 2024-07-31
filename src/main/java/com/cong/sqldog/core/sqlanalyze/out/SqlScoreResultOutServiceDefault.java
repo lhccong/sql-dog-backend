@@ -1,6 +1,5 @@
-package com.cong.sqldog.out;
+package com.cong.sqldog.core.sqlanalyze.out;
 
-import com.cong.sqldog.core.sqlanalyze.out.SqlScoreResultOutService;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResult;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResultDetail;
 import org.slf4j.Logger;
@@ -15,13 +14,13 @@ import java.util.function.Consumer;
  * @author cong
  * @date 2024/04/16
  */
-public class MySqlScoreResultOutService implements SqlScoreResultOutService {
+public class SqlScoreResultOutServiceDefault implements SqlScoreResultOutService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MySqlScoreResultOutService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SqlScoreResultOutServiceDefault.class);
 
     @Override
     public void outResult(SqlScoreResult sqlScoreResult) {
-        logger.info("======================================自定义分析结果===================================");
+        logger.info("======================================分析结果===================================");
         AtomicInteger atomicInteger = new AtomicInteger(1);
         if (sqlScoreResult == null) {
             return;

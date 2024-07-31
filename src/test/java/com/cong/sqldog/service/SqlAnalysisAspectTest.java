@@ -3,10 +3,10 @@ package com.cong.sqldog.service;
 import cn.hutool.json.JSONUtil;
 import com.cong.sqldog.common.TestBase;
 import com.cong.sqldog.out.MySqlScoreResultOutService;
-import com.cong.sqldog.sqlanalyze.analysis.SqlAnalysisResultList;
-import com.cong.sqldog.sqlanalyze.score.SqlScoreResult;
-import com.cong.sqldog.sqlanalyze.score.SqlScoreService;
-import com.cong.sqldog.sqlanalyze.score.SqlScoreServiceRulesEngine;
+import com.cong.sqldog.core.sqlanalyze.analysis.SqlAnalysisResultList;
+import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResult;
+import com.cong.sqldog.core.sqlanalyze.score.SqlScoreService;
+import com.cong.sqldog.core.sqlanalyze.score.SqlScoreServiceRulesEngine;
 import com.cong.sqldog.utils.GsonUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -34,6 +34,7 @@ class SqlAnalysisAspectTest extends TestBase {
             return new IllegalStateException("field is not present");
         });
         // 输出评分结果(返回前端+持久化)以下是借鉴模板
+        sqlScoreResult.setSqlId(resultList.getSql());
         mySqlScoreResultOutService.outResult(sqlScoreResult);
 
         Assertions.assertNotNull(sqlScoreResult);
