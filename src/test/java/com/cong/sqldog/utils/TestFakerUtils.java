@@ -1,6 +1,6 @@
 package com.cong.sqldog.utils;
 
-import com.cong.sqldog.core.sqlgenerate.model.MockParamsRandomTypeEnum;
+import com.cong.sqldog.core.sqlgenerate.model.enums.MockParamsRandomTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.util.FakerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;

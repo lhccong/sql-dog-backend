@@ -3,6 +3,7 @@ package com.cong.sqldog.utils;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlCreateTableParser;
 import com.cong.sqldog.core.sqlgenerate.builder.MySQLDialect;
+import com.cong.sqldog.core.sqlgenerate.model.enums.MockTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -18,10 +19,11 @@ class TestSqlAnalyzeUtils {
 
     @Test
     void testCreateSqlAnalyzeUtils() {
-        //创建 SQL 解析
+        //建表 SQL 解析
         TableSchema tableSchema = new TableSchema();
         MySqlCreateTableParser parser = new MySqlCreateTableParser(getMockCreateSql());
         SQLCreateTableStatement sqlCreateTableStatement = parser.parseCreateTable();
+        tableSchema.setDbName(sqlCreateTableStatement.getSchema());
         log.info("数据库名称：{}", sqlCreateTableStatement.getSchema());
         log.info("表名：{}", sqlDialect.parseTableName(sqlCreateTableStatement.getName().getSimpleName()));
         tableSchema.setTableName(sqlDialect.parseTableName(sqlCreateTableStatement.getName().getSimpleName()));
@@ -48,6 +50,7 @@ class TestSqlAnalyzeUtils {
                     }
                 });
             } else if (sqlTableElement instanceof SQLColumnDefinition columnDefinition) {
+                log.info("============================================================================");
                 // 列
                 TableSchema.Field field = new TableSchema.Field();
                 log.info("列名：{}", sqlDialect.parseFieldName(columnDefinition.getNameAsString()));
@@ -57,29 +60,37 @@ class TestSqlAnalyzeUtils {
                 String defaultValue = null;
                 if (columnDefinition.getDefaultExpr() != null) {
                     defaultValue = columnDefinition.getDefaultExpr().toString();
+                    log.info("列默认值：{}", defaultValue);
                 }
                 field.setDefaultValue(defaultValue);
                 field.setNotNull(columnDefinition.containsNotNullConstaint());
+                log.info("字段是否为空：{}", columnDefinition.containsNotNullConstaint()? "不允许为空" : "允许为空");
                 String comment = null;
                 if (columnDefinition.getComment() != null) {
                     comment = columnDefinition.getComment().toString();
                     if (comment.length() > 2) {
                         comment = comment.substring(1, comment.length() - 1);
+                        log.info("列注释：{}", comment);
                     }
                 }
                 field.setComment(comment);
                 field.setPrimaryKey(columnDefinition.isPrimaryKey());
+                log.info("是否为主键：{}", columnDefinition.isPrimaryKey()?"是":"否");
                 field.setAutoIncrement(columnDefinition.isAutoIncrement());
+                log.info("是否为自增：{}", columnDefinition.isAutoIncrement()?"是":"否");
                 String onUpdate = null;
                 if (columnDefinition.getOnUpdate() != null) {
                     onUpdate = columnDefinition.getOnUpdate().toString();
+                    log.info("列更新时机：{}", onUpdate);
                 }
                 field.setOnUpdate(onUpdate);
-//                field.setMockType(MockTypeEnum.NONE.getValue());
+                field.setMockType(MockTypeEnum.NONE.getValue());
                 fieldList.add(field);
             }
         }
+        log.info("============================================================================");
         tableSchema.setFieldList(fieldList);
+        log.info("表结构：{}", tableSchema);
         Assertions.assertNotNull(tableSchema.getTableName());
     }
 
