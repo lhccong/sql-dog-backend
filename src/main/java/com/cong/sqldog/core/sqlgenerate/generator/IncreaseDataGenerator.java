@@ -15,9 +15,9 @@ import java.util.List;
 public class IncreaseDataGenerator implements DataGenerator {
 
     @Override
-    public List<String> doGenerate(Field field, int rowNum) {
+    public List<Object> doGenerate(Field field, int rowNum) {
         String mockParams = field.getMockParams();
-        List<String> list = new ArrayList<>(rowNum);
+        List<Object> list = new ArrayList<>(rowNum);
         if (StringUtils.isBlank(mockParams)) {
             mockParams = "1";
         }

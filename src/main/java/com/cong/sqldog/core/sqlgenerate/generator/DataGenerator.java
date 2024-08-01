@@ -20,6 +20,6 @@ public interface DataGenerator {
      * @param rowNum 行数
      * @return 生成的数据列表
      */
-    List<String> doGenerate(Field field, int rowNum);
+    List<Object> doGenerate(Field field, int rowNum);
 
 }

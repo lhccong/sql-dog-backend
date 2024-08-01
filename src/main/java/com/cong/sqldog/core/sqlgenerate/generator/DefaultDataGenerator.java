@@ -17,9 +17,9 @@ import java.util.List;
  */
 public class DefaultDataGenerator implements DataGenerator {
     @Override
-    public List<String> doGenerate(TableSchema.Field field, int rowNum) {
+    public List<Object> doGenerate(TableSchema.Field field, int rowNum) {
         String mockParams = field.getMockParams();
-        List<String> list = new ArrayList<>(rowNum);
+        List<Object> list = new ArrayList<>(rowNum);
         //如果模拟参数有值采用递增
         if (field.isPrimaryKey()) {
             getMockPrimaryKeyData(rowNum, mockParams, list);
@@ -39,7 +39,7 @@ public class DefaultDataGenerator implements DataGenerator {
         return list;
     }
 
-    private static void getMockPrimaryKeyData(int rowNum, String mockParams, List<String> list) {
+    private static void getMockPrimaryKeyData(int rowNum, String mockParams, List<Object> list) {
         if (StringUtils.isNotBlank(mockParams)) {
             int initValue = 1;
             for (int i = 0; i < rowNum; i++) {
