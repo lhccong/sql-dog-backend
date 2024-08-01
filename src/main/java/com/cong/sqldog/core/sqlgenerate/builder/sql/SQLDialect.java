@@ -1,4 +1,4 @@
-package com.cong.sqldog.core.sqlgenerate.builder;
+package com.cong.sqldog.core.sqlgenerate.builder.sql;
 
 /**
  * SQL 方言

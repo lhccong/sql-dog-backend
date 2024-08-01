@@ -7,7 +7,7 @@ import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlCreateTableParser;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
-import com.cong.sqldog.core.sqlgenerate.builder.MySQLDialect;
+import com.cong.sqldog.core.sqlgenerate.builder.sql.MySQLDialect;
 import com.cong.sqldog.core.sqlgenerate.model.enums.MockTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import lombok.extern.slf4j.Slf4j;
