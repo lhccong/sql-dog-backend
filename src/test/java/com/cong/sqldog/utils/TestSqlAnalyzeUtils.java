@@ -145,17 +145,17 @@ class TestSqlAnalyzeUtils {
 
     String getMockCreateSql() {
         return """
-                CREATE TABLE  sql_dog.Orders (
-                    OrderID INT AUTO_INCREMENT PRIMARY KEY,           -- 自增主键
-                    CustomerID INT NOT NULL,                          -- 客户ID，外键
-                    OrderDate DATETIME DEFAULT CURRENT_TIMESTAMP,     -- 订单日期，默认当前时间
-                    Status ENUM('Pending', 'Shipped', 'Delivered', 'Cancelled') DEFAULT 'Pending',  -- 订单状态
-                    TotalAmount DECIMAL(10, 2) CHECK (TotalAmount >= 0), -- 总金额，带有检查约束
-                    Comments TEXT,                                    -- 备注
-                    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,    -- 创建时间，默认当前时间
-                    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 更新时间，自动更新
-                    INDEX idx_customer_id (CustomerID),               -- 索引
-                    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)  -- 外键约束
-                ) COMMENT = 'This table stores order details for the sql_dog database';""";
+                create table if not exists table_info
+       (
+           id            bigint auto_increment comment 'id' primary key,
+           name          varchar(512)                       null comment '名称',
+           content       text                               null comment '表信息（json）',
+           reviewStatus  int      default 0                 not null comment '状态（0-待审核, 1-通过, 2-拒绝）',
+           reviewMessage varchar(512)                       null comment '审核信息',
+           userId        bigint                             not null comment '创建用户 id',
+           createTime    datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+           updateTime    datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+           isDelete      tinyint  default 0                 not null comment '是否删除'
+       ) comment '表信息';""";
     }
 }
