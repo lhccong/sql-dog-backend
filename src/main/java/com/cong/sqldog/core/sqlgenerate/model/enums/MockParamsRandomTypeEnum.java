@@ -1,4 +1,4 @@
-package com.cong.sqldog.core.sqlgenerate.model;
+package com.cong.sqldog.core.sqlgenerate.model.enums;
 
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;

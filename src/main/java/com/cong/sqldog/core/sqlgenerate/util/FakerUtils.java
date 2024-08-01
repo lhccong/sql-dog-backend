@@ -1,6 +1,6 @@
 package com.cong.sqldog.core.sqlgenerate.util;
 
-import com.cong.sqldog.core.sqlgenerate.model.MockParamsRandomTypeEnum;
+import com.cong.sqldog.core.sqlgenerate.model.enums.MockParamsRandomTypeEnum;
 import net.datafaker.Faker;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
