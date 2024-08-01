@@ -1,7 +1,12 @@
 package com.cong.sqldog.utils;
 
+import com.alibaba.druid.DbType;
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.mysql.parser.MySqlCreateTableParser;
+import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 import com.cong.sqldog.core.sqlgenerate.builder.MySQLDialect;
 import com.cong.sqldog.core.sqlgenerate.model.enums.MockTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
@@ -9,8 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 class TestSqlAnalyzeUtils {
@@ -97,6 +101,46 @@ class TestSqlAnalyzeUtils {
             log.error("解析建表 SQL 失败", e);
 
         }
+    }
+
+    @Test
+    void testSelectSqlAnalyzeUtils() {
+        List<SQLStatement> statementList = SQLUtils.parseStatements(getMockSelectSql(), DbType.mysql);
+        for (SQLStatement statement : statementList) {
+            if (statement instanceof SQLSelectStatement selectStatement) {
+                SchemaStatVisitor visitor = new SchemaStatVisitor(DbType.mysql);
+                statement.accept(visitor);
+
+                //解析表名
+                SQLSelectQueryBlock queryBlock = selectStatement.getSelect().getFirstQueryBlock();
+                SQLTableSource from = queryBlock.getFrom();
+                SQLExprTableSource sqlExprTableSource = (SQLExprTableSource) from;
+                String tableName = sqlExprTableSource.getTableName();
+                log.info("表名：{}", tableName);
+                //查询列
+                Collection<TableStat.Column> columns = visitor.getColumns();
+                List<String> columnList = new ArrayList<>();
+                columns.forEach(row -> {
+                    if (row.isSelect()) {
+                        //保存select字段
+                        columnList.add(row.getName());
+                    }
+                });
+                log.info("查询列：{}", Arrays.toString(columnList.toArray()));
+                //查询过滤条件 where
+                List<TableStat.Condition> conditions = visitor.getConditions();
+                conditions.forEach(condition -> log.info("查询条件：{} {} {}", condition.getColumn().getName(), condition.getOperator(), condition.getValues()));
+                log.info("groupBy 字段：{}", Arrays.toString(visitor.getOrderByColumns().toArray()));
+                log.info("orderBy 字段：{}", Arrays.toString(visitor.getOrderByColumns().toArray()));
+                log.info("limit ：{}", queryBlock.getLimit().getRowCount());
+                log.info("offset ：{}", queryBlock.getOffset());
+                break;
+            }
+        }
+    }
+
+    String getMockSelectSql() {
+        return "SELECT * FROM orders where orderId = 1 and customerId = 2 and totalAmount > 100 group by orderId, customerId order by orderId desc limit 10, 1000";
     }
 
     String getMockCreateSql() {
