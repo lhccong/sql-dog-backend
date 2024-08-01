@@ -5,6 +5,7 @@ import com.cong.sqldog.core.sqlgenerate.builder.sql.MySQLDialect;
 import com.cong.sqldog.core.sqlgenerate.builder.sql.SQLDialect;
 import com.cong.sqldog.core.sqlgenerate.builder.sql.SQLDialectFactory;
 import com.cong.sqldog.core.sqlgenerate.model.enums.FieldTypeEnum;
+import com.cong.sqldog.core.sqlgenerate.model.enums.MockTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema.Field;
 import com.cong.sqldog.exception.BusinessException;
@@ -12,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * SQL 构建器
@@ -132,6 +135,55 @@ public class SqlBuilder {
         }
         return fieldStrBuilder.toString();
     }
+
+    /**
+     * 构造插入数据 SQL
+     * e.g. INSERT INTO report (id, content) VALUES (1, '这个有点问题吧');
+     *
+     * @param tableSchema 表概要
+     * @param dataList 数据列表
+     * @return 生成的 SQL 列表字符串
+     */
+    public String buildInsertSql(TableSchema tableSchema, List<Map<String, Object>> dataList) {
+        // 构造模板
+        String template = "insert into %s (%s) values (%s);";
+        // 构造表名
+        String tableName = sqlDialect.wrapTableName(tableSchema.getTableName());
+        String dbName = tableSchema.getDbName();
+        if (StringUtils.isNotBlank(dbName)) {
+            tableName = String.format("%s.%s", dbName, tableName);
+        }
+        // 构造表字段
+        List<Field> fieldList = tableSchema.getFieldList();
+        // 过滤掉不模拟的字段
+        fieldList = fieldList.stream()
+                .filter(field -> {
+                    MockTypeEnum mockTypeEnum = Optional.ofNullable(MockTypeEnum.getEnumByValue(field.getMockType()))
+                            .orElse(MockTypeEnum.NONE);
+                    return !MockTypeEnum.NONE.equals(mockTypeEnum);
+                })
+                .toList();
+        StringBuilder resultStringBuilder = new StringBuilder();
+        int total = dataList.size();
+        for (int i = 0; i < total; i++) {
+            Map<String, Object> dataRow = dataList.get(i);
+            String keyStr = fieldList.stream()
+                    .map(field -> sqlDialect.wrapFieldName(field.getFieldName()))
+                    .collect(Collectors.joining(", "));
+            String valueStr = fieldList.stream()
+                    .map(field -> getValueStr(field, dataRow.get(field.getFieldName())))
+                    .collect(Collectors.joining(", "));
+            // 填充模板
+            String result = String.format(template, tableName, keyStr, valueStr);
+            resultStringBuilder.append(result);
+            // 最后一个字段后没有换行
+            if (i != total - 1) {
+                resultStringBuilder.append("\n");
+            }
+        }
+        return resultStringBuilder.toString();
+    }
+
 
     /**
      * 根据列的属性获取值字符串
