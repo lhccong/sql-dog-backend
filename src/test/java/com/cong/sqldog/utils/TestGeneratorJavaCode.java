@@ -1,11 +1,15 @@
 package com.cong.sqldog.utils;
 
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
 import com.cong.sqldog.common.TestBase;
 import com.cong.sqldog.core.sqlgenerate.builder.JavaCodeBuilder;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 class TestGeneratorJavaCode extends TestBase {
@@ -17,5 +21,10 @@ class TestGeneratorJavaCode extends TestBase {
         //构造 Java 对象
         String javaEntityCode = JavaCodeBuilder.buildJavaEntityCode(tableSchema);
         log.info("构造 Java 对象：{}", javaEntityCode);
+
+        String dataListStr = "[{\"createTime\":\"2024-08-02 10:41:33\",\"isDelete\":0,\"name\":\"白振家\",\"reviewStatus\":0,\"updateTime\":\"2024-08-02 10:41:33\",\"id\":549401775230977},{\"createTime\":\"2024-08-02 10:41:33\",\"isDelete\":0,\"name\":\"聪\",\"reviewStatus\":0,\"updateTime\":\"2024-08-02 10:41:33\",\"id\":549401775230978}]";
+        List<Map<String, Object>> list = JSONUtil.toBean(dataListStr, new TypeReference<>() {}, true);
+        String javaCode = JavaCodeBuilder.buildJavaObjectCode(tableSchema, list);
+        log.info("构造 Java 代码：\n{}", javaCode);
     }
 }
