@@ -39,11 +39,6 @@ public class TableInfoEditRequest implements Serializable {
      */
     private String reviewMessage;
 
-    /**
-     * 创建人id
-     */
-    private Long userId;
-
     @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

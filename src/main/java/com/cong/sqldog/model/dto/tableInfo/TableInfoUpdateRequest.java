@@ -40,11 +40,6 @@ public class TableInfoUpdateRequest implements Serializable {
     private String reviewMessage;
 
     /**
-     * 创建人id
-     */
-    private Long userId;
-
-    /**
      *  序列化版本标识，用于保证序列化和反序列化的兼容性
      */
     @Serial

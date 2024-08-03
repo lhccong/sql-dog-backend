@@ -125,7 +125,7 @@ public class TableInfoController {
      */
     @PostMapping("/list/page/vo")
     @Operation(summary = "分页获取表信息列表（封装类）")
-    public BaseResponse<Page<TableInfoVO>> listTableInfoVOByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
+    public BaseResponse<Page<TableInfoVO>> listTableInfoVoByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
         long current = tableInfoQueryRequest.getCurrent();
         long size = tableInfoQueryRequest.getPageSize();
         // 限制爬虫

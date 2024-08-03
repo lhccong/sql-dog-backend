@@ -23,7 +23,6 @@ import com.cong.sqldog.service.TableInfoService;
 import com.cong.sqldog.service.UserService;
 import com.cong.sqldog.utils.SqlUtils;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
