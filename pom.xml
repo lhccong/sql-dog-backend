@@ -142,20 +142,6 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Redis 单元测试启动 -->
-        <dependency>
-            <groupId>it.ozimov</groupId>
-            <artifactId>embedded-redis</artifactId>
-            <version>0.7.3</version>
-            <scope>test</scope>
-            <!-- 不排除掉slf4j的话 会冲突-->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <!---========================单元测试配置====================-->
 
         <dependency>
