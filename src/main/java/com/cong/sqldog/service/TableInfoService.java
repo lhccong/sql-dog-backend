@@ -11,7 +11,6 @@ import com.cong.sqldog.model.dto.tableInfo.TableInfoQueryRequest;
 import com.cong.sqldog.model.dto.tableInfo.TableInfoUpdateRequest;
 import com.cong.sqldog.model.entity.TableInfo;
 import com.cong.sqldog.model.vo.TableInfoVO;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 表信息服务
@@ -42,7 +41,7 @@ public interface TableInfoService extends IService<TableInfo> {
      * @param tableInfo 表信息实体
      * @return TableInfoVO
      */
-    TableInfoVO getTableInfoVO(TableInfo tableInfo, HttpServletRequest request);
+    TableInfoVO getTableInfoVO(TableInfo tableInfo);
 
     /**
      * 分页获取表信息封装
@@ -50,7 +49,7 @@ public interface TableInfoService extends IService<TableInfo> {
      * @param tableInfoPage 分页数据
      * @return Page<TableInfoVO>
      */
-    Page<TableInfoVO> getTableInfoVOPage(Page<TableInfo> tableInfoPage);
+    Page<TableInfoVO> getTableInfoVoPage(Page<TableInfo> tableInfoPage);
 
 
     long addTableInfo(TableInfoAddRequest tableInfoAddRequest);
@@ -60,7 +59,6 @@ public interface TableInfoService extends IService<TableInfo> {
     boolean editTableInfo(TableInfoEditRequest tableInfoEditRequest);
 
     boolean updateTableInfo(TableInfoUpdateRequest updateRequest);
-
 
 
 }

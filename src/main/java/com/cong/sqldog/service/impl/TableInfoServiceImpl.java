@@ -113,10 +113,11 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
 
     /**
      * 获取表信息封装
+     *
      * @param tableInfo 表信息实体
      */
     @Override
-    public TableInfoVO getTableInfoVO(TableInfo tableInfo, HttpServletRequest request) {
+    public TableInfoVO getTableInfoVO(TableInfo tableInfo) {
         return TableInfoVO.objToVo(tableInfo);
     }
 
@@ -127,11 +128,11 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
      * @return 分页对象
      */
     @Override
-    public Page<TableInfoVO> getTableInfoVOPage(Page<TableInfo> tableInfoPage) {
+    public Page<TableInfoVO> getTableInfoVoPage(Page<TableInfo> tableInfoPage) {
         List<TableInfo> tableInfoList = tableInfoPage.getRecords();
-        Page<TableInfoVO> tableInfoVOPage = new Page<>(tableInfoPage.getCurrent(), tableInfoPage.getSize(), tableInfoPage.getTotal());
+        Page<TableInfoVO> tableInfoVoPage = new Page<>(tableInfoPage.getCurrent(), tableInfoPage.getSize(), tableInfoPage.getTotal());
         if (CollUtil.isEmpty(tableInfoList)) {
-            return tableInfoVOPage;
+            return tableInfoVoPage;
         }
         // 对象列表 => 封装对象列表
         List<TableInfoVO> tableInfoVOList = tableInfoList.stream().map(TableInfoVO::objToVo).collect(Collectors.toList());
@@ -153,8 +154,8 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         });
         // endregion
 
-        tableInfoVOPage.setRecords(tableInfoVOList);
-        return tableInfoVOPage;
+        tableInfoVoPage.setRecords(tableInfoVOList);
+        return tableInfoVoPage;
     }
 
     /**

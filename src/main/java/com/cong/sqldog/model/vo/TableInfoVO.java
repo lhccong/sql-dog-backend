@@ -14,16 +14,34 @@ import java.io.Serializable;
 @Data
 public class TableInfoVO implements Serializable {
 
+    /**
+     * id
+     */
     private Long id;
 
+    /**
+     * 名字
+     */
     private String name;
 
+    /**
+     * 内容
+     */
     private String content;
 
+    /**
+     * 审核状态
+     */
     private Integer reviewStatus;
 
+    /**
+     * 评论消息
+     */
     private String reviewMessage;
 
+    /**
+     * 用户 ID
+     */
     private Long userId;
 
 

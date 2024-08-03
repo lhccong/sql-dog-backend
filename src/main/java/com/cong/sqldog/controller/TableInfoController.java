@@ -20,7 +20,6 @@ import com.cong.sqldog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,13 +90,13 @@ public class TableInfoController {
      */
     @GetMapping("/get/vo")
     @Operation(summary = "根据 id 获取表信息（封装类）")
-    public BaseResponse<TableInfoVO> getTableInfoVOById(long id, HttpServletRequest request) {
+    public BaseResponse<TableInfoVO> getTableInfoVoById(long id) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         TableInfo tableInfo = tableInfoService.getById(id);
         ThrowUtils.throwIf(tableInfo == null, ErrorCode.NOT_FOUND_ERROR);
         // 获取封装类
-        return ResultUtils.success(tableInfoService.getTableInfoVO(tableInfo, request));
+        return ResultUtils.success(tableInfoService.getTableInfoVO(tableInfo));
     }
 
     /**
@@ -135,7 +134,7 @@ public class TableInfoController {
         Page<TableInfo> tableInfoPage = tableInfoService.page(new Page<>(current, size),
                 tableInfoService.getQueryWrapper(tableInfoQueryRequest));
         // 获取封装类
-        return ResultUtils.success(tableInfoService.getTableInfoVOPage(tableInfoPage));
+        return ResultUtils.success(tableInfoService.getTableInfoVoPage(tableInfoPage));
     }
 
     /**
@@ -159,7 +158,7 @@ public class TableInfoController {
         Page<TableInfo> tableInfoPage = tableInfoService.page(new Page<>(current, size),
                 tableInfoService.getQueryWrapper(tableInfoQueryRequest));
         // 获取封装类
-        return ResultUtils.success(tableInfoService.getTableInfoVOPage(tableInfoPage));
+        return ResultUtils.success(tableInfoService.getTableInfoVoPage(tableInfoPage));
     }
 
     /**
