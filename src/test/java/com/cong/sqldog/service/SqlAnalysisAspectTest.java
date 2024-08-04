@@ -2,6 +2,7 @@ package com.cong.sqldog.service;
 
 import cn.hutool.json.JSONUtil;
 import com.cong.sqldog.common.TestBase;
+import com.cong.sqldog.core.sqlanalyze.analysis.SqlAnalysisResult;
 import com.cong.sqldog.out.MySqlScoreResultOutService;
 import com.cong.sqldog.core.sqlanalyze.analysis.SqlAnalysisResultList;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResult;
@@ -28,6 +29,11 @@ class SqlAnalysisAspectTest extends TestBase {
     void analysisTest() {
         String mockResultListStr = "{\"sql\":\"SELECT * FROM user WHERE id = 1\",\"resultList\":[{\"id\":1,\"selectType\":\"SIMPLE\",\"table\":\"user\",\"type\":\"ALL\",\"rows\":\"1\",\"filtered\":100,\"extra\":\"Using where\"}]}";
         SqlAnalysisResultList resultList = JSONUtil.toBean(mockResultListStr, SqlAnalysisResultList.class);
+//        String text = "{\"selectType\":\"SIMPLE\",\"table\":\"student\",\"type\":\"all\",\"possibleKeys\":\"PRIMARY\",\"key\":\"PRIMARY\",\"extra\":\"Using where\"}";
+        String text = "{\"selectType\":\"SIMPLE\",\"table\":\"student\",\"type\":\"ALL\",\"possibleKeys\":\"\",\"key\":\"\",\"extra\":\"Using where\"}";
+        SqlAnalysisResult result = JSONUtil.toBean(text, SqlAnalysisResult.class);
+        resultList.getResultList().set(0,result);
+
         Optional<SqlScoreResult> optional = Optional.ofNullable(sqlScoreService.score(resultList));
         SqlScoreResult sqlScoreResult = optional.orElseThrow(() -> {
             log.error("SQL 分析评分异常 {},{}", GsonUtil.bean2Json(resultList), resultList.getSql());
