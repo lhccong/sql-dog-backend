@@ -81,16 +81,17 @@ create table if not exists level_info
 -- 关卡题目表
 create table if not exists topic_level
 (
-    id         bigint auto_increment comment 'id' primary key,
-    title      varchar(64)                        null comment '关卡中文名',
-    initSQL    varchar(512)                       null comment '初始化 SQL',
-    mdContent  text                               not null comment '关卡教程 Markdown 文档',
-    defaultSQL varchar(512)                       null comment '关卡初始化后默认执行的语句，一般是查询全表',
-    answer     varchar(512)                       null comment '关卡标准答案',
-    hint       varchar(256)                       null comment '关卡提示',
-    type       varchar(256)                       null comment '关卡类别，custom 自定义、system 系统',
-    userId     bigint                             not null comment '创建用户 id',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    isDelete   tinyint  default 0                 not null comment '是否删除'
+    id          bigint auto_increment comment 'id' primary key,
+    title       varchar(64)                        null comment '关卡中文名',
+    initSQL     varchar(512)                       null comment '初始化 SQL',
+    mdContent   text                               not null comment '关卡教程 Markdown 文档',
+    defaultSQL  varchar(512)                       null comment '关卡初始化后默认执行的语句，一般是查询全表',
+    answer      varchar(512)                       null comment '关卡标准答案',
+    hint        varchar(256)                       null comment '关卡提示',
+    type        varchar(256)                       null comment '关卡类别，custom 自定义、system 系统',
+    nextLevelId bigint                             null comment '下一关卡的 id',
+    userId      bigint                             not null comment '创建用户 id',
+    createTime  datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete    tinyint  default 0                 not null comment '是否删除'
 ) comment '关卡题目';
