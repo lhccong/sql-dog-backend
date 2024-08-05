@@ -14,6 +14,10 @@ spring:
       host: localhost
       port: 6379
       timeout: 5000
+  sql:
+    init:
+      schema-locations: classpath:db/h2/schema.sql
+      data-locations: classpath:db/h2/data.sql
 # 对象存储
 # todo 需替换配置
 cos:
@@ -47,7 +51,7 @@ sa-token:
 sql:
   slow:
     mirror:
-      analysisSwitch: true #是否开启 SQL 分析
+      analysisSwitch: false #是否开启 SQL 分析
       #      onlyCheckOnce: true  #是否只分析一次
       #      checkInterval: 300000  #分析间隔 只有 onlyCheckOnce 为 false 的时候才有效
       ##      exceptSqlIds: com.cong.example.mapper.TaskMapper.selectList,com.cong.example.mapper.TaskMapper.xxx #不需要分析的 SQL ID

@@ -9,7 +9,7 @@ create database if not exists sql_dog;
 use sql_dog;
 
 -- 用户表
-create table if not exists user
+create table if not exists user_info
 (
     id           bigint auto_increment comment 'id' primary key,
     userAccount  varchar(256)                           not null comment '账号',
