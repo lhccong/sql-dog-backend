@@ -1,4 +1,4 @@
-package com.cong.sqldog.model.dto.tableInfo;
+package com.cong.sqldog.model.dto.tableinfo;
 
 import lombok.Data;
 

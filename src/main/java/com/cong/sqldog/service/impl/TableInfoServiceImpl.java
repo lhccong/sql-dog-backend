@@ -11,10 +11,9 @@ import com.cong.sqldog.constant.CommonConstant;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.exception.ThrowUtils;
 import com.cong.sqldog.mapper.TableInfoMapper;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoAddRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoEditRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoQueryRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoUpdateRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoQueryRequest;
 import com.cong.sqldog.model.entity.TableInfo;
 import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
@@ -66,10 +65,8 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         if (StringUtils.isNotBlank(name) && name.length() > 30) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "名称过长");
         }
-        if (StringUtils.isNotBlank(content)) {
-            if (content.length() > 20000) {
-                throw new BusinessException(ErrorCode.PARAMS_ERROR, "内容过长");
-            }
+        if (StringUtils.isNotBlank(content) && (content.length() > 20000)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "内容过长");
         }
         if (reviewStatus != null && !ReviewStatusEnum.getValues().contains(reviewStatus)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -134,7 +131,7 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
             return tableInfoVoPage;
         }
         // 对象列表 => 封装对象列表
-        List<TableInfoVO> tableInfoVOList = tableInfoList.stream().map(TableInfoVO::objToVo).collect(Collectors.toList());
+        List<TableInfoVO> tableInfoVOList = tableInfoList.stream().map(TableInfoVO::objToVo).toList();
 
         //  可以根据需要为封装对象补充值，不需要的内容可以删除
         // region 可选
@@ -233,29 +230,6 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         if (!oldTableInfo.getId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
-        // 操作数据库
-        boolean result = updateById(tableInfo);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        return false;
-    }
-
-    /**
-     * 更新表信息
-     */
-    @Override
-    public boolean updateTableInfo(TableInfoUpdateRequest updateRequest) {
-        if (updateRequest == null || updateRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        // 在此处将实体类和 DTO 进行转换
-        TableInfo tableInfo = new TableInfo();
-        BeanUtils.copyProperties(updateRequest, tableInfo);
-        // 数据校验
-        this.validTableInfo(tableInfo, false);
-        // 判断是否存在
-        long id = updateRequest.getId();
-        TableInfo oldTableInfo = getById(id);
-        ThrowUtils.throwIf(oldTableInfo == null, ErrorCode.NOT_FOUND_ERROR);
         // 操作数据库
         boolean result = updateById(tableInfo);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);

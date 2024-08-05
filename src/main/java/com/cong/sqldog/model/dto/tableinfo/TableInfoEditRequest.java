@@ -1,4 +1,4 @@
-package com.cong.sqldog.model.dto.tableInfo;
+package com.cong.sqldog.model.dto.tableinfo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
@@ -28,16 +28,6 @@ public class TableInfoEditRequest implements Serializable {
      * 内容（JSON 数组）
      */
     private String content;
-
-    /**
-     * 状态（0-待审核, 1-通过, 2-拒绝）
-     */
-    private Integer reviewStatus;
-
-    /**
-     * 审核信息
-     */
-    private String reviewMessage;
 
     @Serial
     @TableField(exist = false)

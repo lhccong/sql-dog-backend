@@ -8,10 +8,9 @@ import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
 import com.cong.sqldog.constant.UserConstant;
 import com.cong.sqldog.exception.ThrowUtils;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoAddRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoEditRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoQueryRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoUpdateRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoQueryRequest;
 import com.cong.sqldog.model.entity.TableInfo;
 import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.vo.TableInfoVO;
@@ -65,20 +64,6 @@ public class TableInfoController {
     @Operation(summary = "删除表信息")
     public BaseResponse<Boolean> deleteTableInfo(@RequestBody DeleteRequest deleteRequest) {
         boolean result = tableInfoService.deleteTableInfo(deleteRequest);
-        return ResultUtils.success(result);
-    }
-
-    /**
-     * 更新表信息（仅管理员可用）
-     *
-     * @param tableInfoUpdateRequest 更新表信息请求
-     * @return {@link BaseResponse }<{@link Boolean }>
-     */
-    @PostMapping("/update")
-    @Operation(summary = "更新表信息（仅管理员可用）")
-    @SaCheckRole(UserConstant.ADMIN_ROLE)
-    public BaseResponse<Boolean> updateTableInfo(@RequestBody TableInfoUpdateRequest tableInfoUpdateRequest) {
-        boolean result = tableInfoService.updateTableInfo(tableInfoUpdateRequest);
         return ResultUtils.success(result);
     }
 

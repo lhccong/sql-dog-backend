@@ -4,8 +4,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.TestBase;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoAddRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoUpdateRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
 import com.cong.sqldog.model.vo.LoginUserVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
@@ -112,33 +112,6 @@ class TableInfoServiceTest extends TestBase {
     }
 
     /**
-     * 更新表格信息测试
-     */
-    @Test
-    void updateTable() throws Exception {
-        // 获取token
-        String token = getToken();
-        // 准备测试数据
-        TableInfoUpdateRequest tableInfoUpdateRequest = new TableInfoUpdateRequest();
-        long UpdateId = 1819578907435847681L;
-        String updateName = "updated 测试表";
-        tableInfoUpdateRequest.setName(updateName);
-        tableInfoUpdateRequest.setId(UpdateId);
-
-        // 创建cookie并添加到请求中
-        MockCookie cookie = new MockCookie(StpUtil.getTokenName(), token);
-
-        // 发送请求并验证结果
-        mockMvc.perform(MockMvcRequestBuilders.post("/tableInfo/update")
-                        .cookie(cookie) // 将token添加到cookie中
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JSONUtil.toJsonStr(tableInfoUpdateRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(true));
-    }
-
-    /**
      * 编辑表格信息测试
 
      */
@@ -147,11 +120,11 @@ class TableInfoServiceTest extends TestBase {
         // 获取token
         String token = getToken();
         // 准备测试数据
-        TableInfoUpdateRequest tableInfoUpdateRequest = new TableInfoUpdateRequest();
+        TableInfoEditRequest tableInfoEditRequest = new TableInfoEditRequest();
         long UpdateId = 1819578907435847681L;
         String updateName = "updated 测试表";
-        tableInfoUpdateRequest.setName(updateName);
-        tableInfoUpdateRequest.setId(UpdateId);
+        tableInfoEditRequest.setName(updateName);
+        tableInfoEditRequest.setId(UpdateId);
 
         // 创建cookie并添加到请求中
         MockCookie cookie = new MockCookie(StpUtil.getTokenName(), token);
@@ -160,7 +133,7 @@ class TableInfoServiceTest extends TestBase {
         mockMvc.perform(MockMvcRequestBuilders.post("/tableInfo/edit")
                         .cookie(cookie) // 将token添加到cookie中
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(JSONUtil.toJsonStr(tableInfoUpdateRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
+                        .content(JSONUtil.toJsonStr(tableInfoEditRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(true));

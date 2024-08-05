@@ -1,21 +1,18 @@
-package com.cong.sqldog.model.dto.tableInfo;
+package com.cong.sqldog.model.dto.tableinfo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.cong.sqldog.common.PageRequest;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 查询表信息请求
+ * 更新表信息请求
  *
  * @author <a href="https://github.com/lhccong">聪</a>
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class TableInfoQueryRequest extends PageRequest implements Serializable {
+public class TableInfoUpdateRequest implements Serializable {
 
     /**
      * id
@@ -43,17 +40,9 @@ public class TableInfoQueryRequest extends PageRequest implements Serializable {
     private String reviewMessage;
 
     /**
-     * 创建用户 id
+     *  序列化版本标识，用于保证序列化和反序列化的兼容性
      */
-    private Long userId;
-
-    /**
-     * 搜索词
-     */
-    private String searchText;
-
     @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
 }

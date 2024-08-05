@@ -5,10 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cong.sqldog.common.DeleteRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoAddRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoEditRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoQueryRequest;
-import com.cong.sqldog.model.dto.tableInfo.TableInfoUpdateRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoQueryRequest;
 import com.cong.sqldog.model.entity.TableInfo;
 import com.cong.sqldog.model.vo.TableInfoVO;
 
@@ -57,8 +56,6 @@ public interface TableInfoService extends IService<TableInfo> {
     boolean deleteTableInfo(DeleteRequest deleteRequest);
 
     boolean editTableInfo(TableInfoEditRequest tableInfoEditRequest);
-
-    boolean updateTableInfo(TableInfoUpdateRequest updateRequest);
 
 
 }
