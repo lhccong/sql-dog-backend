@@ -166,10 +166,6 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         TableInfo tableInfo = new TableInfo();
         BeanUtils.copyProperties(tableInfoAddRequest, tableInfo);
 
-        // 将 content 转换为 JSON 字符串
-        String content = tableInfoAddRequest.getContent();
-        tableInfo.setContent(JSONUtil.toJsonStr(content));
-
         // 数据校验
         this.validTableInfo(tableInfo, true);
 
