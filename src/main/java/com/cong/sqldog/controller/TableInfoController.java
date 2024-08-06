@@ -5,18 +5,16 @@ import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
-import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
+import com.cong.sqldog.common.ReviewRequest;
 import com.cong.sqldog.constant.UserConstant;
-import com.cong.sqldog.exception.ThrowUtils;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoQueryRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoUpdateRequest;
 import com.cong.sqldog.model.entity.TableInfo;
-import com.cong.sqldog.model.entity.User;
-import com.cong.sqldog.model.vo.TableInfoVO;
+import com.cong.sqldog.model.vo.TableInfoVo;
 import com.cong.sqldog.service.TableInfoService;
-import com.cong.sqldog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -36,9 +34,6 @@ public class TableInfoController {
 
     @Resource
     private TableInfoService tableInfoService;
-
-    @Resource
-    private UserService userService;
 
     // region 增删改查
 
@@ -74,18 +69,13 @@ public class TableInfoController {
      * 根据 id 获取表信息（封装类）
      *
      * @param id 表信息 id
-     * @return {@link BaseResponse }<{@link TableInfoVO }>
+     * @return {@link BaseResponse }<{@link TableInfoVo }>
      */
     @GetMapping("/get/vo")
     @Operation(summary = "根据 id 获取表信息（封装类）")
     @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
-    public BaseResponse<TableInfoVO> getTableInfoVoById(long id) {
-        ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
-        // 查询数据库
-        TableInfo tableInfo = tableInfoService.getById(id);
-        ThrowUtils.throwIf(tableInfo == null, ErrorCode.NOT_FOUND_ERROR);
-        // 获取封装类
-        return ResultUtils.success(tableInfoService.getTableInfoVO(tableInfo));
+    public BaseResponse<TableInfoVo> getTableInfoVoById(long id) {
+        return ResultUtils.success(tableInfoService.getTableInfoVoById(id));
     }
 
     /**
@@ -98,58 +88,47 @@ public class TableInfoController {
     @SaCheckRole(UserConstant.ADMIN_ROLE)
     @Operation(summary = "分页获取表信息列表（仅管理员可用）")
     public BaseResponse<Page<TableInfo>> listTableInfoByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
-        long current = tableInfoQueryRequest.getCurrent();
-        long size = tableInfoQueryRequest.getPageSize();
-        // 查询数据库
-        Page<TableInfo> tableInfoPage = tableInfoService.page(new Page<>(current, size),
-                tableInfoService.getQueryWrapper(tableInfoQueryRequest));
-        return ResultUtils.success(tableInfoPage);
+        return ResultUtils.success(tableInfoService.listTableInfoByPage(tableInfoQueryRequest));
     }
 
     /**
      * 分页获取表信息列表（封装类）
      *
      * @param tableInfoQueryRequest 分页获取表信息列表请求
-     * @return {@link BaseResponse }<{@link Page }<{@link TableInfoVO }>>
+     * @return {@link BaseResponse }<{@link Page }<{@link TableInfoVo }>>
      */
     @PostMapping("/list/page/vo")
     @Operation(summary = "分页获取表信息列表（封装类）")
     @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
-    public BaseResponse<Page<TableInfoVO>> listTableInfoVoByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
-        long current = tableInfoQueryRequest.getCurrent();
-        long size = tableInfoQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        // 查询数据库
-        Page<TableInfo> tableInfoPage = tableInfoService.page(new Page<>(current, size),
-                tableInfoService.getQueryWrapper(tableInfoQueryRequest));
-        // 获取封装类
-        return ResultUtils.success(tableInfoService.getTableInfoVoPage(tableInfoPage));
+    public BaseResponse<Page<TableInfoVo>> listTableInfoVoByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
+        return ResultUtils.success(tableInfoService.listTableInfoVoByPage(tableInfoQueryRequest));
     }
 
     /**
      * 分页获取当前登录用户创建的表信息列表
      *
      * @param tableInfoQueryRequest 分页获取表信息列表请求
-     * @return {@link BaseResponse }<{@link Page }<{@link TableInfoVO }>>
+     * @return {@link BaseResponse }<{@link Page }<{@link TableInfoVo }>>
      */
     @PostMapping("/my/list/page/vo")
     @Operation(summary = "分页获取当前登录用户创建的表信息列表")
     @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
-    public BaseResponse<Page<TableInfoVO>> listMyTableInfoVOByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
-        ThrowUtils.throwIf(tableInfoQueryRequest == null, ErrorCode.PARAMS_ERROR);
-        // 补充查询条件，只查询当前登录用户的数据
-        User loginUser = userService.getLoginUser();
-        tableInfoQueryRequest.setId(loginUser.getId());
-        long current = tableInfoQueryRequest.getCurrent();
-        long size = tableInfoQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        // 查询数据库
-        Page<TableInfo> tableInfoPage = tableInfoService.page(new Page<>(current, size),
-                tableInfoService.getQueryWrapper(tableInfoQueryRequest));
-        // 获取封装类
-        return ResultUtils.success(tableInfoService.getTableInfoVoPage(tableInfoPage));
+    public BaseResponse<Page<TableInfoVo>> listMyTableInfoVOByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
+        return ResultUtils.success(tableInfoService.listMyTableInfoVoByPage(tableInfoQueryRequest));
+    }
+
+    /**
+     * 更新表信息（仅管理员可用）
+     *
+     * @param tableInfoUpdateRequest 更新表信息请求
+     * @return {@link BaseResponse }<{@link Boolean }>
+     */
+    @PostMapping("/update")
+    @Operation(summary = "更新表信息（仅管理员可用）")
+    @SaCheckRole(UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> updateTableInfo(@RequestBody TableInfoUpdateRequest tableInfoUpdateRequest) {
+        boolean result = tableInfoService.updateTableInfo(tableInfoUpdateRequest);
+        return ResultUtils.success(result);
     }
 
     /**
@@ -166,5 +145,14 @@ public class TableInfoController {
         return ResultUtils.success(result);
     }
 
-    // endregion
+    /**
+     * 表信息状态审核（仅管理员可用）
+     */
+    @PostMapping("/review")
+    @SaCheckRole(UserConstant.ADMIN_ROLE)
+    @Operation(summary = "表信息状态审核（仅管理员可用）")
+    public BaseResponse<Boolean> doTableInfoReview(@RequestBody ReviewRequest reviewRequest) {
+        boolean result = tableInfoService.doTableInfoReview(reviewRequest);
+        return ResultUtils.success(result);
+    }
 }

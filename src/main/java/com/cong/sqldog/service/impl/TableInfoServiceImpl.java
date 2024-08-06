@@ -1,11 +1,13 @@
 package com.cong.sqldog.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.ErrorCode;
+import com.cong.sqldog.common.ReviewRequest;
 import com.cong.sqldog.constant.CommonConstant;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.exception.ThrowUtils;
@@ -13,10 +15,11 @@ import com.cong.sqldog.mapper.TableInfoMapper;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoQueryRequest;
+import com.cong.sqldog.model.dto.tableinfo.TableInfoUpdateRequest;
 import com.cong.sqldog.model.entity.TableInfo;
 import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
-import com.cong.sqldog.model.vo.TableInfoVO;
+import com.cong.sqldog.model.vo.TableInfoVo;
 import com.cong.sqldog.service.TableInfoService;
 import com.cong.sqldog.service.UserService;
 import com.cong.sqldog.utils.SqlUtils;
@@ -64,7 +67,7 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         if (StringUtils.isNotBlank(name) && name.length() > 30) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "名称过长");
         }
-        if (StringUtils.isNotBlank(content) && (content.length() > 20000)) {
+        if (StringUtils.isNotBlank(content) && content.length() > 20000) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "内容过长");
         }
         if (reviewStatus != null && !ReviewStatusEnum.getValues().contains(reviewStatus)) {
@@ -107,13 +110,23 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
     }
 
     /**
-     * 获取表信息封装
-     *
-     * @param tableInfo 表信息实体
+     * 分页获取表信息
      */
     @Override
-    public TableInfoVO getTableInfoVO(TableInfo tableInfo) {
-        return TableInfoVO.objToVo(tableInfo);
+    public Page<TableInfo> listTableInfoByPage(TableInfoQueryRequest tableInfoQueryRequest) {
+        long current = tableInfoQueryRequest.getCurrent();
+        long size = tableInfoQueryRequest.getPageSize();
+        // 查询数据库
+        return this.page(new Page<>(current, size),
+                this.getQueryWrapper(tableInfoQueryRequest));
+    }
+
+    /**
+     * 获取表信息封装
+     */
+    @Override
+    public TableInfoVo getTableInfoVo(TableInfo tableInfo) {
+        return TableInfoVo.objToVo(tableInfo);
     }
 
     /**
@@ -123,14 +136,14 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
      * @return 分页对象
      */
     @Override
-    public Page<TableInfoVO> getTableInfoVoPage(Page<TableInfo> tableInfoPage) {
+    public Page<TableInfoVo> getTableInfoVoPage(Page<TableInfo> tableInfoPage) {
         List<TableInfo> tableInfoList = tableInfoPage.getRecords();
-        Page<TableInfoVO> tableInfoVoPage = new Page<>(tableInfoPage.getCurrent(), tableInfoPage.getSize(), tableInfoPage.getTotal());
+        Page<TableInfoVo> tableInfoVoPage = new Page<>(tableInfoPage.getCurrent(), tableInfoPage.getSize(), tableInfoPage.getTotal());
         if (CollUtil.isEmpty(tableInfoList)) {
             return tableInfoVoPage;
         }
         // 对象列表 => 封装对象列表
-        List<TableInfoVO> tableInfoVOList = tableInfoList.stream().map(TableInfoVO::objToVo).toList();
+        List<TableInfoVo> tableInfoVoList = tableInfoList.stream().map(TableInfoVo::objToVo).collect(Collectors.toList());
 
         //  可以根据需要为封装对象补充值，不需要的内容可以删除
         // region 可选
@@ -139,17 +152,17 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
         // 填充信息
-        tableInfoVOList.forEach(tableInfoVO -> {
-            Long userId = tableInfoVO.getUserId();
+        tableInfoVoList.forEach(tableInfoVo -> {
+            Long userId = tableInfoVo.getUserId();
             User user = null;
             if (userIdUserListMap.containsKey(userId)) {
                 user = userIdUserListMap.get(userId).get(0);
             }
-            tableInfoVO.setUser(userService.getUserVO(user));
+            tableInfoVo.setUser(userService.getUserVO(user));
         });
         // endregion
 
-        tableInfoVoPage.setRecords(tableInfoVOList);
+        tableInfoVoPage.setRecords(tableInfoVoList);
         return tableInfoVoPage;
     }
 
@@ -165,8 +178,14 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         TableInfo tableInfo = new TableInfo();
         BeanUtils.copyProperties(tableInfoAddRequest, tableInfo);
 
+        // 将 content 转换为 JSON 字符串
+        String content = tableInfoAddRequest.getContent();
+        tableInfo.setContent(JSONUtil.toJsonStr(content));
+
         // 数据校验
         this.validTableInfo(tableInfo, true);
+
+        // 填充默认值
 
         // 写入数据库
         boolean result = this.save(tableInfo);
@@ -223,6 +242,107 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         }
         // 操作数据库
         boolean result = updateById(tableInfo);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return true;
+    }
+
+    /**
+     * 更新表信息
+     */
+    @Override
+    public boolean updateTableInfo(TableInfoUpdateRequest tableInfoUpdateRequest) {
+        if (tableInfoUpdateRequest == null || tableInfoUpdateRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 在此处将实体类和 DTO 进行转换
+        TableInfo tableInfo = new TableInfo();
+        BeanUtils.copyProperties(tableInfoUpdateRequest, tableInfo);
+        // 数据校验
+        this.validTableInfo(tableInfo, false);
+        // 判断是否存在
+        long id = tableInfoUpdateRequest.getId();
+        TableInfo oldTableInfo = getById(id);
+        ThrowUtils.throwIf(oldTableInfo == null, ErrorCode.NOT_FOUND_ERROR);
+        // 操作数据库
+        boolean result = updateById(tableInfo);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return true;
+    }
+
+    /**
+     * 根据 id 获取表信息（封装类）
+     */
+    @Override
+    public TableInfoVo getTableInfoVoById(long id) {
+        ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
+        // 查询数据库
+        TableInfo tableInfo = this.getById(id);
+        ThrowUtils.throwIf(tableInfo == null, ErrorCode.NOT_FOUND_ERROR, "未找到对应的表信息");
+        // 获取封装类
+        return this.getTableInfoVo(tableInfo);
+    }
+
+
+    /**
+     * 分页获取表信息列表（封装类）
+     */
+    @Override
+    public Page<TableInfoVo> listTableInfoVoByPage(TableInfoQueryRequest tableInfoQueryRequest) {
+        long current = tableInfoQueryRequest.getCurrent();
+        long size = tableInfoQueryRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 查询数据库
+        Page<TableInfo> tableInfoPage = this.page(new Page<>(current, size),
+                this.getQueryWrapper(tableInfoQueryRequest));
+        // 获取封装类
+        return this.getTableInfoVoPage(tableInfoPage);
+    }
+
+    /**
+     * 分页获取我的表信息列表（封装类）
+     */
+    @Override
+    public Page<TableInfoVo> listMyTableInfoVoByPage(TableInfoQueryRequest tableInfoQueryRequest) {
+        User loginUser = userService.getLoginUser();
+        tableInfoQueryRequest.setId(loginUser.getId());
+        long current = tableInfoQueryRequest.getCurrent();
+        long size = tableInfoQueryRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 查询数据库
+        Page<TableInfo> tableInfoPage = this.page(new Page<>(current, size),
+                this.getQueryWrapper(tableInfoQueryRequest));
+        // 获取封装类
+        return this.getTableInfoVoPage(tableInfoPage);
+    }
+
+    /**
+     * 表信息状态审核
+     */
+    @Override
+    public Boolean doTableInfoReview(ReviewRequest reviewRequest) {
+        ThrowUtils.throwIf(reviewRequest == null, ErrorCode.PARAMS_ERROR);
+        Long id = reviewRequest.getId();
+        Integer reviewStatus = reviewRequest.getReviewStatus();
+        // 校验
+        ReviewStatusEnum reviewStatusEnum = ReviewStatusEnum.getEnumByValue(reviewStatus);
+        if (id == null || reviewStatusEnum == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 判断是否存在
+        TableInfo oldTable = this.getById(id);
+        ThrowUtils.throwIf(oldTable == null, ErrorCode.NOT_FOUND_ERROR);
+        // 已是该状态
+        if (oldTable.getReviewStatus().equals(reviewStatus)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请勿重复审核");
+        }
+        // 更新审核状态
+        TableInfo tableInfo = new TableInfo();
+        tableInfo.setId(id);
+        tableInfo.setReviewStatus(reviewStatus);
+        tableInfo.setReviewMessage(reviewRequest.getReviewMessage());
+        boolean result = this.updateById(tableInfo);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return true;
     }
