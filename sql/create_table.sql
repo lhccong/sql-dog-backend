@@ -65,7 +65,7 @@ create index idx_name
     on field_info (name);
 
 -- SQL 执行记录表
-create table if not exists level_info
+create table if not exists execute_info
 (
     id               bigint auto_increment comment 'id' primary key,
     sqlContent       varchar(512)                       null comment '执行 SQL 的内容',
