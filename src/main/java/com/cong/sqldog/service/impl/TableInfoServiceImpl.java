@@ -1,7 +1,6 @@
 package com.cong.sqldog.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -168,10 +167,6 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
 
         // 数据校验
         this.validTableInfo(tableInfo, true);
-
-        // 填充默认值
-        User loginUser = userService.getLoginUser();
-        tableInfo.setUserId(loginUser.getId());
 
         // 写入数据库
         boolean result = this.save(tableInfo);

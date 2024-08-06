@@ -43,6 +43,7 @@ public class TableInfo implements Serializable {
     /**
      * 创建用户 id
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long userId;
 
     /**

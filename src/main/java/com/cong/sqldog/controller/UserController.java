@@ -1,6 +1,7 @@
 package com.cong.sqldog.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
@@ -156,6 +157,7 @@ public class UserController {
      */
     @GetMapping("/get/login")
     @Operation(summary = "获取当前登录用户")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<LoginUserVO> getLoginUser() {
         User user = userService.getLoginUser();
         return ResultUtils.success(userService.getLoginUserVO(user));
@@ -252,6 +254,7 @@ public class UserController {
      */
     @GetMapping("/get/vo")
     @Operation(summary = "根据 id 获取包装类")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<UserVO> getUserVoById(long id) {
         BaseResponse<User> response = getUserById(id);
         User user = response.getData();
@@ -283,6 +286,7 @@ public class UserController {
      */
     @PostMapping("/list/page/vo")
     @Operation(summary = "分页获取用户封装列表")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Page<UserVO>> listUserVoByPage(@RequestBody UserQueryRequest userQueryRequest) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -309,6 +313,7 @@ public class UserController {
      */
     @PostMapping("/update/my")
     @Operation(summary = "更新个人信息")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest) {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

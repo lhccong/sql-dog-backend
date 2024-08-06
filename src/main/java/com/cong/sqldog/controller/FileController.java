@@ -1,10 +1,13 @@
 package com.cong.sqldog.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.io.FileUtil;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
 import com.cong.sqldog.constant.FileConstant;
+import com.cong.sqldog.constant.UserConstant;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.manager.CosManager;
 import com.cong.sqldog.model.dto.file.UploadFileRequest;
@@ -52,6 +55,7 @@ public class FileController {
      */
     @PostMapping("/upload")
     @Operation(summary = "文件上传")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<String> uploadFile(@RequestPart("file") MultipartFile multipartFile,
                                            UploadFileRequest uploadFileRequest) {
         String biz = uploadFileRequest.getBiz();

@@ -1,6 +1,7 @@
 package com.cong.sqldog.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
@@ -49,6 +50,7 @@ public class TableInfoController {
      */
     @PostMapping("/add")
     @Operation(summary = "创建表信息")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Long> addTableInfo(@RequestBody TableInfoAddRequest tableInfoAddRequest) {
         long newTableInfoId = tableInfoService.addTableInfo(tableInfoAddRequest);
         return ResultUtils.success(newTableInfoId);
@@ -62,6 +64,7 @@ public class TableInfoController {
      */
     @PostMapping("/delete")
     @Operation(summary = "删除表信息")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Boolean> deleteTableInfo(@RequestBody DeleteRequest deleteRequest) {
         boolean result = tableInfoService.deleteTableInfo(deleteRequest);
         return ResultUtils.success(result);
@@ -75,6 +78,7 @@ public class TableInfoController {
      */
     @GetMapping("/get/vo")
     @Operation(summary = "根据 id 获取表信息（封装类）")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<TableInfoVO> getTableInfoVoById(long id) {
         ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
         // 查询数据库
@@ -110,6 +114,7 @@ public class TableInfoController {
      */
     @PostMapping("/list/page/vo")
     @Operation(summary = "分页获取表信息列表（封装类）")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Page<TableInfoVO>> listTableInfoVoByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
         long current = tableInfoQueryRequest.getCurrent();
         long size = tableInfoQueryRequest.getPageSize();
@@ -130,6 +135,7 @@ public class TableInfoController {
      */
     @PostMapping("/my/list/page/vo")
     @Operation(summary = "分页获取当前登录用户创建的表信息列表")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Page<TableInfoVO>> listMyTableInfoVOByPage(@RequestBody TableInfoQueryRequest tableInfoQueryRequest) {
         ThrowUtils.throwIf(tableInfoQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
@@ -154,6 +160,7 @@ public class TableInfoController {
      */
     @PostMapping("/edit")
     @Operation(summary = "编辑表信息（给用户使用）")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Boolean> editTableInfo(@RequestBody TableInfoEditRequest tableInfoEditRequest) {
         boolean result = tableInfoService.editTableInfo(tableInfoEditRequest);
         return ResultUtils.success(result);
