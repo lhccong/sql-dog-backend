@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @author <a href="https://github.com/lhccong">聪</a>
  */
 @Data
-public class TableInfoVO implements Serializable {
+public class TableInfoVo implements Serializable {
 
     /**
      * id
@@ -53,7 +53,7 @@ public class TableInfoVO implements Serializable {
     /**
      * 封装类转对象
      */
-    public static TableInfo voToObj(TableInfoVO tableInfoVO) {
+    public static TableInfo voToObj(TableInfoVo tableInfoVO) {
         if (tableInfoVO == null) {
             return null;
         }
@@ -65,11 +65,11 @@ public class TableInfoVO implements Serializable {
     /**
      * 对象转封装类
      */
-    public static TableInfoVO objToVo(TableInfo tableInfo) {
+    public static TableInfoVo objToVo(TableInfo tableInfo) {
         if (tableInfo == null) {
             return null;
         }
-        TableInfoVO tableInfoVO = new TableInfoVO();
+        TableInfoVo tableInfoVO = new TableInfoVo();
         BeanUtils.copyProperties(tableInfo, tableInfoVO);
         return tableInfoVO;
     }
