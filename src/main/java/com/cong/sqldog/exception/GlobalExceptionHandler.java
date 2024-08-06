@@ -1,5 +1,7 @@
 package com.cong.sqldog.exception;
 
+import cn.dev33.satoken.exception.NotRoleException;
+import cn.dev33.satoken.exception.SaTokenException;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
@@ -16,13 +18,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
-    public BaseResponse<?> businessExceptionHandler(BusinessException e) {
+    public Object businessExceptionHandler(BusinessException e) {
         log.error("BusinessException", e);
         return ResultUtils.error(e.getCode(), e.getMessage());
     }
 
+    @ExceptionHandler(SaTokenException.class)
+    public Object saTokenExceptionHandler(SaTokenException e) {
+        log.error("SaTokenException", e);
+        if (e instanceof NotRoleException) {
+            return ResultUtils.error(ErrorCode.NO_AUTH_ERROR);
+        }
+        return ResultUtils.error(e.getCode(), e.getMessage());
+    }
+
     @ExceptionHandler(RuntimeException.class)
-    public BaseResponse<?> runtimeExceptionHandler(RuntimeException e) {
+    public Object runtimeExceptionHandler(RuntimeException e) {
         log.error("RuntimeException", e);
         return ResultUtils.error(ErrorCode.SYSTEM_ERROR, "系统错误");
     }
