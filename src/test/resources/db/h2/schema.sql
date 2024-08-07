@@ -79,6 +79,7 @@ CREATE TABLE topic_level
     answer      VARCHAR(512) NULL COMMENT '关卡标准答案',
     hint        VARCHAR(256) NULL COMMENT '关卡提示',
     type        VARCHAR(256) NULL COMMENT '关卡类别，custom 自定义、system 系统',
+    preLevelId BIGINT NULL COMMENT '上一关卡的 id',
     nextLevelId BIGINT NULL COMMENT '下一关卡的 id',
     userId      BIGINT                              NOT NULL COMMENT '创建用户 id',
     createTime  TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
