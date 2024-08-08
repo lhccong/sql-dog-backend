@@ -83,7 +83,7 @@ create table if not exists topic_level
 (
     id          bigint auto_increment comment 'id' primary key,
     title       varchar(64)                        null comment '关卡中文名',
-    initSQL     varchar(512)                       null comment '初始化 SQL',
+    initSQL     text                               null comment '初始化 SQL',
     mdContent   text                               not null comment '关卡教程 Markdown 文档',
     defaultSQL  varchar(512)                       null comment '关卡初始化后默认执行的语句，一般是查询全表',
     answer      varchar(512)                       null comment '关卡标准答案',
