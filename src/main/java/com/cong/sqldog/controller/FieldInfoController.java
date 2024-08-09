@@ -1,6 +1,7 @@
 package com.cong.sqldog.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
@@ -52,6 +53,7 @@ public class FieldInfoController {
      */
     @PostMapping("/add")
     @Operation(summary = "创建字段信息")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Long> addFieldInfo(@RequestBody FieldInfoAddRequest fieldInfoAddRequest) {
         long newFieldInfoId = fieldInfoService.addFieldInfo(fieldInfoAddRequest);
         return ResultUtils.success(newFieldInfoId);
@@ -63,6 +65,7 @@ public class FieldInfoController {
      * @param deleteRequest 删除字段信息请求
      * @return {@link BaseResponse }<{@link Boolean }>
      */
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     @PostMapping("/delete")
     @Operation(summary = "删除字段信息")
     public BaseResponse<Boolean> deleteFieldInfo(@RequestBody DeleteRequest deleteRequest) {
@@ -70,27 +73,6 @@ public class FieldInfoController {
         return ResultUtils.success(result);
     }
 
-
-    /**
-     * 根据 id 获取字段信息（封装类）
-     *
-     * @param id 字段信息 id
-     * @return {@link BaseResponse }<{@link FieldInfoVO }>
-     */
-    @GetMapping("/get/vo")
-    @Operation(summary = "根据 id 获取字段信息（封装类）")
-    public BaseResponse<FieldInfoVO> getFieldInfoVoById(long id) {
-        ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
-        // 查询数据库
-        FieldInfo fieldInfo = fieldInfoService.getById(id);
-        ThrowUtils.throwIf(fieldInfo == null, ErrorCode.NOT_FOUND_ERROR);
-        // 获取当前登录用户信息
-        UserVO userVO = new UserVO();
-        User loginUser = userService.getLoginUser();
-        BeanUtils.copyProperties(loginUser, userVO);
-        // 获取封装类
-        return ResultUtils.success(fieldInfoService.getFieldInfoVO(fieldInfo,userVO));
-    }
 
     /**
      * 分页获取字段信息列字段（仅管理员可用）
@@ -131,6 +113,20 @@ public class FieldInfoController {
     }
 
     /**
+     * 根据 id 获取字段信息（封装类）
+     *
+     * @param id 字段信息 id
+     * @return {@link BaseResponse }<{@link FieldInfoVO }>
+     */
+    @GetMapping("/get/vo")
+    @Operation(summary = "根据 id 获取字段信息（封装类）")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
+    public BaseResponse<FieldInfoVO> getFieldInfoVoById(long id) {
+        FieldInfoVO fieldInfoVO = fieldInfoService.getFieldInfoVoById(id);
+        return ResultUtils.success(fieldInfoVO);
+    }
+
+    /**
      * 分页获取当前登录用户创建的字段信息列字段
      *
      * @param fieldInfoQueryRequest 分页获取字段信息列字段请求
@@ -138,6 +134,7 @@ public class FieldInfoController {
      */
     @PostMapping("/my/list/page/vo")
     @Operation(summary = "分页获取当前登录用户创建的字段信息列字段")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Page<FieldInfoVO>> listMyFieldInfoVOByPage(@RequestBody FieldInfoQueryRequest fieldInfoQueryRequest) {
         ThrowUtils.throwIf(fieldInfoQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
@@ -162,6 +159,7 @@ public class FieldInfoController {
      */
     @PostMapping("/edit")
     @Operation(summary = "编辑字段信息（给用户使用）")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Boolean> editFieldInfo(@RequestBody FieldInfoEditRequest fieldInfoEditRequest) {
         boolean result = fieldInfoService.editFieldInfo(fieldInfoEditRequest);
         return ResultUtils.success(result);
@@ -175,6 +173,7 @@ public class FieldInfoController {
      */
     @PostMapping("/update")
     @Operation(summary = "编辑字段信息（给管理员使用）")
+    @SaCheckRole(UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateFieldInfo(@RequestBody FieldInfoUpdateRequest fieldInfoUpdateRequest) {
         boolean result = fieldInfoService.editFieldInfoByAdmin(fieldInfoUpdateRequest);
         return ResultUtils.success(result);

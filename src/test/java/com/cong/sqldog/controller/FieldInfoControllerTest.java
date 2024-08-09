@@ -73,7 +73,7 @@ class FieldInfoControllerTest {
         // 是否为空
         contentJson.setNotNull(false);
         // 注释
-        contentJson.setComment("comment");
+        contentJson.setComment("注释");
         // 是否主键
         contentJson.setPrimaryKey(false);
         // 是否自增
@@ -124,13 +124,8 @@ class FieldInfoControllerTest {
         FieldInfo fieldInfo = fieldInfoService.getById(id);
         ThrowUtils.throwIf(fieldInfo == null, ErrorCode.NOT_FOUND_ERROR);
 
-        // 获取当前登录用户信息
-        UserVO userVO = new UserVO();
-        User loginUser = userService.getLoginUser();
-        BeanUtils.copyProperties(loginUser, userVO);
-
         // 获取封装类
-        fieldInfoService.getFieldInfoVO(fieldInfo, userVO);
+        fieldInfoService.getFieldInfoVO(fieldInfo);
     }
 
     /**

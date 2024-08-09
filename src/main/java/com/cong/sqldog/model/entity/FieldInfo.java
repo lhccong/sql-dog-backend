@@ -48,6 +48,7 @@ public class FieldInfo implements Serializable {
     /**
      * 创建用户 id
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long userId;
 
     /**

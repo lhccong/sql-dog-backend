@@ -20,11 +20,11 @@ import com.cong.sqldog.model.entity.*;
 import com.cong.sqldog.model.entity.FieldInfo;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
 import com.cong.sqldog.model.vo.FieldInfoVO;
-import com.cong.sqldog.model.vo.UserVO;
 import com.cong.sqldog.service.FieldInfoService;
 import com.cong.sqldog.service.UserService;
 import com.cong.sqldog.utils.SqlUtils;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
  * @createDate 2024-08-06 01:21:20
  */
 @Service
+@Slf4j
 public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo>
         implements FieldInfoService {
 
@@ -46,12 +47,11 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
     /**
      * 添加字段信息
      *
-     * @param fieldInfoAddRequest
-     * @return
+     * @param fieldInfoAddRequest 创建字段信息请求
+     * @return 字段 id
      */
     @Override
     public long addFieldInfo(FieldInfoAddRequest fieldInfoAddRequest) {
-
         // 参数校验
         ThrowUtils.throwIf(fieldInfoAddRequest == null, ErrorCode.PARAMS_ERROR);
 
@@ -62,10 +62,6 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
 
         // 数据校验
         this.validFieldInfo(fieldInfo, true);
-
-        // 填充默认值
-        User loginUser = userService.getLoginUser();
-        fieldInfo.setUserId(loginUser.getId());
 
         // 写入数据库
         boolean result = this.save(fieldInfo);
@@ -78,8 +74,8 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
     /**
      * 删除字段信息
      *
-     * @param deleteRequest
-     * @return
+     * @param deleteRequest 删除请求
+     * @return 是否删除成功
      */
     @Override
     public boolean deleteFieldInfo(DeleteRequest deleteRequest) {
@@ -88,13 +84,16 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         }
         User user = userService.getLoginUser();
         long id = deleteRequest.getId();
+
         // 判断是否存在
         FieldInfo oldFieldInfo = this.getById(id);
         ThrowUtils.throwIf(oldFieldInfo == null, ErrorCode.NOT_FOUND_ERROR);
+
         // 仅本人或管理员可删除
         if (!oldFieldInfo.getId().equals(user.getId()) && !userService.isAdmin()) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
+
         // 操作数据库
         boolean result = this.removeById(id);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
@@ -119,8 +118,6 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         // 对象列表 => 封装对象列表
         fieldInfoVOList = fieldInfoList.stream().map(FieldInfoVO::objToVo).toList();
 
-        //  可以根据需要为封装对象补充值，不需要的内容可以删除
-        // region 可选
         // 1. 关联查询用户信息
         Set<Long> userIdSet = fieldInfoList.stream().map(FieldInfo::getUserId).collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
@@ -134,7 +131,6 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
             }
             fieldInfoVO.setUserVO(userService.getUserVO(user));
         });
-        // endregion
 
         fieldInfoVoPage.setRecords(fieldInfoVOList);
         return fieldInfoVoPage;
@@ -143,8 +139,8 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
     /**
      * 编辑表信息（给用户使用）
      *
-     * @param fieldInfoEditRequest
-     * @return
+     * @param fieldInfoEditRequest 编辑字段信息请求
+     * @return 是否编辑成功
      */
     @Override
     public boolean editFieldInfo(FieldInfoEditRequest fieldInfoEditRequest) {
@@ -185,8 +181,8 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
     /**
      * 更新字段信息（给管理员使用）
      *
-     * @param fieldInfoUpdateRequest
-     * @return
+     * @param fieldInfoUpdateRequest 更新字段信息请求
+     * @return 是否编辑成功
      */
     @Override
     public boolean editFieldInfoByAdmin(FieldInfoUpdateRequest fieldInfoUpdateRequest) {
@@ -218,21 +214,39 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         return true;
     }
 
+    /**
+     * 根据 id 获取字段信息
+     * @param id 字段信息 id
+     * @return 字段信息
+     */
+    @Override
+    public FieldInfoVO getFieldInfoVoById(long id) {
+
+        // 如果 id 小于等于 0，报错请求参数错误
+        ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
+
+        // 获取 id 查询字段信息
+        FieldInfo fieldInfo = this.getById(id);
+        ThrowUtils.throwIf(fieldInfo == null, ErrorCode.NOT_FOUND_ERROR);
+
+        return this.getFieldInfoVO(fieldInfo);
+    }
+
     // region 工具方法
 
 
     /**
      * 数据校验
      *
-     * @param fieldInfo
-     * @param result
+     * @param fieldInfo 字段信息
+     * @param result void
      */
     public void validFieldInfo(FieldInfo fieldInfo, boolean result) {
-
+        // 参数不能为 null
         if (fieldInfo == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-
+        // 获取字段信息
         String name = fieldInfo.getName();
         String fieldName = fieldInfo.getFieldName();
         String content = fieldInfo.getContent();
@@ -268,16 +282,16 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
      * @param fieldInfo 字段信息实体
      */
     @Override
-    public FieldInfoVO getFieldInfoVO(FieldInfo fieldInfo, UserVO userVo) {
-        return FieldInfoVO.objToVo(fieldInfo, userVo);
+    public FieldInfoVO getFieldInfoVO(FieldInfo fieldInfo) {
+        return FieldInfoVO.objToVo(fieldInfo);
     }
 
 
     /**
      * 获取查询条件
      *
-     * @param fieldInfoQueryRequest
-     * @return
+     * @param fieldInfoQueryRequest 查询字段请求信息
+     * @return QueryWrapper<FieldInfo>
      */
     @Override
     public QueryWrapper<FieldInfo> getQueryWrapper(FieldInfoQueryRequest fieldInfoQueryRequest) {
@@ -285,6 +299,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         if (fieldInfoQueryRequest == null) {
             return queryWrapper;
         }
+
         // 从对象中取值
         Long id = fieldInfoQueryRequest.getId();
         String fieldName = fieldInfoQueryRequest.getFieldName();
@@ -293,28 +308,28 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         String sortField = fieldInfoQueryRequest.getSortField();
         String sortOrder = fieldInfoQueryRequest.getSortOrder();
         Long userId = fieldInfoQueryRequest.getUserId();
-        // 补充需要的查询条件
+
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
             // 需要拼接查询条件
             queryWrapper.and(qw -> qw.like("title", searchText).or().like("content", searchText));
         }
+
         // 模糊查询
         queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
+
         // 精确查询
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(fieldName), "fieldName", fieldName);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
+
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),
                 sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
+
         return queryWrapper;
     }
-
-
-
-
 
     // endregion
 }

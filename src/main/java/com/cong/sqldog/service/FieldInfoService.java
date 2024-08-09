@@ -3,7 +3,6 @@ package com.cong.sqldog.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
@@ -11,7 +10,6 @@ import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
 import com.cong.sqldog.model.entity.FieldInfo;
 import com.cong.sqldog.model.vo.FieldInfoVO;
-import com.cong.sqldog.model.vo.UserVO;
 
 /**
 * @author 香香
@@ -23,57 +21,64 @@ public interface FieldInfoService extends IService<FieldInfo> {
     /**
      * 添加字段信息
      *
-     * @param fieldInfoAddRequest
-     * @return
+     * @param fieldInfoAddRequest 新增字段信息请求
+     * @return long
      */
     long addFieldInfo(FieldInfoAddRequest fieldInfoAddRequest);
 
     /**
      * 删除字段信息
      *
-     * @param deleteRequest
-     * @return
+     * @param deleteRequest 删除字段信息请求
+     * @return boolean
      */
     boolean deleteFieldInfo(DeleteRequest deleteRequest);
 
     /**
      * 编辑字段信息（给用户使用）
      *
-     * @param fieldInfoEditRequest
-     * @return
+     * @param fieldInfoEditRequest 编辑字段信息请求
+     * @return boolean
      */
     boolean editFieldInfo(FieldInfoEditRequest fieldInfoEditRequest);
+
 
     /**
      * 根据 id 获取字段信息（封装类）
      *
-     * @param fieldInfo
-     * @param userVo
-     * @return
+     * @param fieldInfo 字段信息
+     * @return FieldInfoVO
      */
-    FieldInfoVO getFieldInfoVO(FieldInfo fieldInfo, UserVO userVo);
+    FieldInfoVO getFieldInfoVO(FieldInfo fieldInfo);
 
     /**
      * 获取查询条件
      *
-     * @param fieldInfoQueryRequest
-     * @return
+     * @param fieldInfoQueryRequest 查询字段信息请求
+     * @return QueryWrapper<FieldInfo>
      */
     QueryWrapper<FieldInfo> getQueryWrapper(FieldInfoQueryRequest fieldInfoQueryRequest);
 
     /**
      * 分页获取字段信息封装
      *
-     * @param fieldInfoPage
-     * @return
+     * @param fieldInfoPage 分页获取字段信息请求
+     * @return Page<FieldInfoVO>
      */
     Page<FieldInfoVO> getFieldInfoVoPage(Page<FieldInfo> fieldInfoPage);
 
     /**
      * 更新字段信息（给管理员使用）
      *
-     * @param fieldInfoUpdateRequest
-     * @return
+     * @param fieldInfoUpdateRequest 更新字段信息请求
+     * @return boolean
      */
     boolean editFieldInfoByAdmin(FieldInfoUpdateRequest fieldInfoUpdateRequest);
+
+    /**
+     * 根据 id 查询字段信息
+     * @param id id
+     * @return  FieldInfoVO
+     */
+    FieldInfoVO getFieldInfoVoById(long id);
 }
