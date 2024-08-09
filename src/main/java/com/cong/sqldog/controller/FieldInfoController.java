@@ -40,9 +40,6 @@ public class FieldInfoController {
     @Resource
     private FieldInfoService fieldInfoService;
 
-    @Resource
-    private UserService userService;
-
     // region 增删改查
 
     /**
@@ -84,12 +81,7 @@ public class FieldInfoController {
     @SaCheckRole(UserConstant.ADMIN_ROLE)
     @Operation(summary = "分页获取字段信息列字段（仅管理员可用）")
     public BaseResponse<Page<FieldInfo>> listFieldInfoByPage(@RequestBody FieldInfoQueryRequest fieldInfoQueryRequest) {
-        long current = fieldInfoQueryRequest.getCurrent();
-        long size = fieldInfoQueryRequest.getPageSize();
-        // 查询数据库
-        Page<FieldInfo> fieldInfoPage = fieldInfoService.page(new Page<>(current, size),
-                fieldInfoService.getQueryWrapper(fieldInfoQueryRequest));
-        return ResultUtils.success(fieldInfoPage);
+        return ResultUtils.success(fieldInfoService.listFieldInfoByPage(fieldInfoQueryRequest));
     }
 
     /**
@@ -101,15 +93,7 @@ public class FieldInfoController {
     @PostMapping("/list/page/vo")
     @Operation(summary = "分页获取字段信息列字段（封装类）")
     public BaseResponse<Page<FieldInfoVO>> listFieldInfoVoByPage(@RequestBody FieldInfoQueryRequest fieldInfoQueryRequest) {
-        long current = fieldInfoQueryRequest.getCurrent();
-        long size = fieldInfoQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        // 查询数据库
-        Page<FieldInfo> fieldInfoPage = fieldInfoService.page(new Page<>(current, size),
-                fieldInfoService.getQueryWrapper(fieldInfoQueryRequest));
-        // 获取封装类
-        return ResultUtils.success(fieldInfoService.getFieldInfoVoPage(fieldInfoPage));
+        return ResultUtils.success(fieldInfoService.listFieldInfoVoByPage(fieldInfoQueryRequest));
     }
 
     /**
@@ -136,19 +120,7 @@ public class FieldInfoController {
     @Operation(summary = "分页获取当前登录用户创建的字段信息列字段")
     @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
     public BaseResponse<Page<FieldInfoVO>> listMyFieldInfoVOByPage(@RequestBody FieldInfoQueryRequest fieldInfoQueryRequest) {
-        ThrowUtils.throwIf(fieldInfoQueryRequest == null, ErrorCode.PARAMS_ERROR);
-        // 补充查询条件，只查询当前登录用户的数据
-        User loginUser = userService.getLoginUser();
-        fieldInfoQueryRequest.setUserId(loginUser.getId());
-        long current = fieldInfoQueryRequest.getCurrent();
-        long size = fieldInfoQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        // 查询数据库
-        Page<FieldInfo> fieldInfoPage = fieldInfoService.page(new Page<>(current, size),
-                fieldInfoService.getQueryWrapper(fieldInfoQueryRequest));
-        // 获取封装类
-        return ResultUtils.success(fieldInfoService.getFieldInfoVoPage(fieldInfoPage));
+        return ResultUtils.success(fieldInfoService.listMyFieldInfoVOByPage(fieldInfoQueryRequest));
     }
 
     /**
@@ -175,7 +147,7 @@ public class FieldInfoController {
     @Operation(summary = "编辑字段信息（给管理员使用）")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateFieldInfo(@RequestBody FieldInfoUpdateRequest fieldInfoUpdateRequest) {
-        boolean result = fieldInfoService.editFieldInfoByAdmin(fieldInfoUpdateRequest);
+        boolean result = fieldInfoService.updateFieldInfoByAdmin(fieldInfoUpdateRequest);
         return ResultUtils.success(result);
     }
 

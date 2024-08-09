@@ -20,6 +20,7 @@ import com.cong.sqldog.model.entity.*;
 import com.cong.sqldog.model.entity.FieldInfo;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
 import com.cong.sqldog.model.vo.FieldInfoVO;
+import com.cong.sqldog.model.vo.TableInfoVo;
 import com.cong.sqldog.service.FieldInfoService;
 import com.cong.sqldog.service.UserService;
 import com.cong.sqldog.utils.SqlUtils;
@@ -185,7 +186,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
      * @return 是否编辑成功
      */
     @Override
-    public boolean editFieldInfoByAdmin(FieldInfoUpdateRequest fieldInfoUpdateRequest) {
+    public boolean updateFieldInfoByAdmin(FieldInfoUpdateRequest fieldInfoUpdateRequest) {
         if (fieldInfoUpdateRequest == null || fieldInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -230,6 +231,62 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         ThrowUtils.throwIf(fieldInfo == null, ErrorCode.NOT_FOUND_ERROR);
 
         return this.getFieldInfoVO(fieldInfo);
+    }
+
+    /**
+     * 分页获取新段信息列表
+     *
+     * @param fieldInfoQueryRequest 查询字段信息请求
+     * @return Page<FieldInfo>
+     */
+    @Override
+    public Page<FieldInfo> listFieldInfoByPage(FieldInfoQueryRequest fieldInfoQueryRequest) {
+        long current = fieldInfoQueryRequest.getCurrent();
+        long size = fieldInfoQueryRequest.getPageSize();
+        // 查询数据库
+        return this.page(new Page<>(current, size),
+                this.getQueryWrapper(fieldInfoQueryRequest));
+    }
+
+    /**
+     * 分页获取字段信息列表
+     *
+     * @param fieldInfoQueryRequest 查询字段信息请求
+     * @return Page<FieldInfoVO>
+     */
+    @Override
+    public Page<FieldInfoVO> listFieldInfoVoByPage(FieldInfoQueryRequest fieldInfoQueryRequest) {
+        long current = fieldInfoQueryRequest.getCurrent();
+        long size = fieldInfoQueryRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 查询数据库
+        Page<FieldInfo> tableInfoPage = this.page(new Page<>(current, size),
+                this.getQueryWrapper(fieldInfoQueryRequest));
+        // 获取封装类
+        return this.getFieldInfoVoPage(tableInfoPage);
+    }
+
+    /**
+     * 分页获取我的字段信息列表
+     *
+     * @param fieldInfoQueryRequest 查询字段信息请求
+     * @return Page<FieldInfoVO>
+     */
+    @Override
+    public Page<FieldInfoVO> listMyFieldInfoVOByPage(FieldInfoQueryRequest fieldInfoQueryRequest) {
+        ThrowUtils.throwIf(fieldInfoQueryRequest == null, ErrorCode.PARAMS_ERROR);
+        User loginUser = userService.getLoginUser();
+        fieldInfoQueryRequest.setUserId(loginUser.getId());
+        long current = fieldInfoQueryRequest.getCurrent();
+        long size = fieldInfoQueryRequest.getPageSize();
+        // 限制爬虫
+        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
+        // 查询数据库
+        Page<FieldInfo> tableInfoPage = this.page(new Page<>(current, size),
+                this.getQueryWrapper(fieldInfoQueryRequest));
+        // 获取封装类
+        return this.getFieldInfoVoPage(tableInfoPage);
     }
 
     // region 工具方法
