@@ -2,7 +2,7 @@ package com.cong.sqldog.utils;
 
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
-import com.cong.sqldog.common.TestBase;
+import com.cong.sqldog.common.TestBaseNotRedis;
 import com.cong.sqldog.core.sqlgenerate.builder.JavaCodeBuilder;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-class TestGeneratorJavaCode extends TestBase {
+class TestGeneratorJavaCode extends TestBaseNotRedis {
 
     @Test
     void generateData() {
