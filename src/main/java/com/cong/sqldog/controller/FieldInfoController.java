@@ -5,25 +5,19 @@ import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
-import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
 import com.cong.sqldog.constant.UserConstant;
-import com.cong.sqldog.exception.ThrowUtils;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
 import com.cong.sqldog.model.entity.FieldInfo;
-import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.vo.FieldInfoVO;
-import com.cong.sqldog.model.vo.UserVO;
 import com.cong.sqldog.service.FieldInfoService;
-import com.cong.sqldog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 /**

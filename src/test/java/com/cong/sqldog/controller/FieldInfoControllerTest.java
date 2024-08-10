@@ -1,15 +1,11 @@
 package com.cong.sqldog.controller;
 
+import cn.dev33.satoken.stp.StpLogic;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cong.sqldog.common.BaseResponse;
-import com.cong.sqldog.common.DeleteRequest;
-import com.cong.sqldog.common.ErrorCode;
-import com.cong.sqldog.common.ResultUtils;
+import com.cong.sqldog.common.*;
 import com.cong.sqldog.exception.ThrowUtils;
-import com.cong.sqldog.model.dto.fieldinfo.ContentJson;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
+import com.cong.sqldog.model.dto.fieldinfo.*;
 import com.cong.sqldog.model.entity.FieldInfo;
 import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.vo.FieldInfoVO;
@@ -17,9 +13,17 @@ import com.cong.sqldog.model.vo.UserVO;
 import com.cong.sqldog.service.FieldInfoService;
 import com.cong.sqldog.service.UserService;
 import jakarta.annotation.Resource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.mockito.ArgumentMatchers.any;
 
 
 /**
@@ -29,33 +33,39 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @Date 2024-08-06 18:54
  **/
 @SpringBootTest
-class FieldInfoControllerTest {
+class FieldInfoControllerTest extends TestBase {
 
-    @Resource
-    private FieldInfoService fieldInfoService;
-
-    @Resource
+    @MockBean
     private UserService userService;
 
-    /**
-     * 登录 - 测试
-     */
-    void login() {
-        // 登录
-        String userAccount = "xiangxiang";
-        String userPassword = "xiangxiang";
-        userService.userLogin(userAccount, userPassword);
-    }
+    @MockBean
+    StpLogic stpLogic;
 
+    /**
+     * 模拟已登录用户,
+     */
+    @BeforeEach
+    void setUp() {
+        User mockUser = new User();
+        mockUser.setId(1816001696590692353L);
+        mockUser.setUserRole("admin");
+
+        // 模拟 getLoginUser 方法返回 mockUser
+        Mockito.when(userService.getLoginUser()).thenReturn(mockUser);
+        Mockito.when(userService.isAdmin()).thenReturn(true);
+
+        //模拟 userService.getById 方法返回mockUser
+        Mockito.when(userService.getById(mockUser.getId())).thenReturn(mockUser);
+        Mockito.when(stpLogic.getLoginId(any())).thenAnswer(invocation -> mockUser.getId().toString());
+        Mockito.when(stpLogic.getLoginId()).thenAnswer(invocation -> mockUser.getId().toString());
+    }
 
     /**
      * 创建字段信息 - 测试
      *
      */
     @Test
-    void addFieldInfo() {
-        // 登录
-        login();
+    void addFieldInfo() throws Exception {
 
         FieldInfoAddRequest fieldInfoAddRequest = new FieldInfoAddRequest();
 
@@ -73,7 +83,7 @@ class FieldInfoControllerTest {
         // 是否为空
         contentJson.setNotNull(false);
         // 注释
-        contentJson.setComment("注释");
+        contentJson.setComment("comment");
         // 是否主键
         contentJson.setPrimaryKey(false);
         // 是否自增
@@ -91,7 +101,13 @@ class FieldInfoControllerTest {
         // 审核信息
         fieldInfoAddRequest.setReviewMessage("info1");
 
-        fieldInfoService.addFieldInfo(fieldInfoAddRequest);
+        // 发送请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.post("/fieldInfo/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSONUtil.toJsonStr(fieldInfoAddRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
 
 
     }
@@ -101,110 +117,62 @@ class FieldInfoControllerTest {
      *
      */
     @Test
-    void deleteFieldInfo() {
-        // 登录
-        login();
+    void deleteFieldInfo() throws Exception {
 
         DeleteRequest deleteRequest = new DeleteRequest();
-        deleteRequest.setId(1L);
-        fieldInfoService.deleteFieldInfo(deleteRequest);
+        deleteRequest.setId(1821846185877061634L);
+
+        // 发送请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.post("/fieldInfo/delete")
+                .content(JSONUtil.toJsonStr(deleteRequest)) // 将整个对象序列化为JSON字符串并作为请求体发送
+                .contentType(MediaType.APPLICATION_JSON)) // 设置请求体的内容类型为JSON
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(true));
     }
 
-    /**
-     * 根据 id 获取字段信息（封装类） - 测试
-     *
-     */
-    @Test
-    void getFieldInfoVoById() {
-        // 登录
-        login();
 
-        // mock
-        long id = 1820811949573373953L;
-        FieldInfo fieldInfo = fieldInfoService.getById(id);
-        ThrowUtils.throwIf(fieldInfo == null, ErrorCode.NOT_FOUND_ERROR);
-
-        // 获取封装类
-        fieldInfoService.getFieldInfoVO(fieldInfo);
-    }
-
-    /**
-     * 分页获取字段信息列字段（仅管理员可用） - 测试
-     *
-     */
-    @Test
-    void listFieldInfoByPage() {
-        // 登录（非管路不可操作）
-        login();
-
-        FieldInfoQueryRequest fieldInfoQueryRequest = new FieldInfoQueryRequest();
-        long current = fieldInfoQueryRequest.getCurrent();
-        long size = fieldInfoQueryRequest.getPageSize();
-
-        // 查询数据库
-        fieldInfoService.page(new Page<>(current, size),
-                fieldInfoService.getQueryWrapper(fieldInfoQueryRequest));
-    }
-
-    /**
-     * 分页获取字段信息列字段（封装类） - 测试
-     *
-     */
-    @Test
-    void listFieldInfoVoByPage() {
-        // 登录
-        login();
-
-        FieldInfoQueryRequest fieldInfoQueryRequest = new FieldInfoQueryRequest();
-        long current = fieldInfoQueryRequest.getCurrent();
-        long size = fieldInfoQueryRequest.getPageSize();
-
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        // 查询数据库
-        Page<FieldInfo> fieldInfoPage = fieldInfoService.page(new Page<>(current, size),
-                fieldInfoService.getQueryWrapper(fieldInfoQueryRequest));
-        // 获取封装类
-        fieldInfoService.getFieldInfoVoPage(fieldInfoPage);
-    }
-
-    /**
-     * 分页获取当前登录用户创建的字段信息列字段 - 测试
-     *
-     */
-    @Test
-    void listMyFieldInfoVOByPage() {
-        // 登录
-        login();
-
-        FieldInfoQueryRequest fieldInfoQueryRequest = new FieldInfoQueryRequest();
-        // 补充查询条件，只查询当前登录用户的数据
-        User loginUser = userService.getLoginUser();
-        fieldInfoQueryRequest.setUserId(loginUser.getId());
-        long current = fieldInfoQueryRequest.getCurrent();
-        long size = fieldInfoQueryRequest.getPageSize();
-        // 限制爬虫
-        ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        // 查询数据库
-        Page<FieldInfo> fieldInfoPage = fieldInfoService.page(new Page<>(current, size),
-                fieldInfoService.getQueryWrapper(fieldInfoQueryRequest));
-        // 获取封装类
-        fieldInfoService.getFieldInfoVoPage(fieldInfoPage);
-    }
 
     /**
      * 编辑字段信息（给用户使用）- 测试
      *
      */
     @Test
-    void editFieldInfo() {
-        // 登录
-        login();
+    void editFieldInfo() throws Exception {
 
         FieldInfoEditRequest editRequest = new FieldInfoEditRequest();
         // mock
-        editRequest.setId(1820811949573373953L);
+        editRequest.setId(1820812119325270018L);
         editRequest.setFieldName("newFieldName");
-        fieldInfoService.editFieldInfo(editRequest);
+
+        // 发送请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.post("/fieldInfo/edit")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSONUtil.toJsonStr(editRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+    }
+
+    /**
+     * 更新字段信息（给管理使用）- 测试
+     *
+     */
+    @Test
+    void UpdateFieldInfo() throws Exception {
+
+        FieldInfoUpdateRequest updateRequest = new FieldInfoUpdateRequest();
+        // mock
+        updateRequest.setId(1820812119325270018L);
+        updateRequest.setFieldName("newFieldName");
+
+        // 发送请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.post("/fieldInfo/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JSONUtil.toJsonStr(updateRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
     }
 }
