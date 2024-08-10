@@ -20,6 +20,7 @@ import com.cong.sqldog.model.entity.TableInfo;
 import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
 import com.cong.sqldog.model.vo.TableInfoVo;
+import com.cong.sqldog.model.vo.UserVO;
 import com.cong.sqldog.service.TableInfoService;
 import com.cong.sqldog.service.UserService;
 import com.cong.sqldog.utils.SqlUtils;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -126,7 +128,22 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
      */
     @Override
     public TableInfoVo getTableInfoVo(TableInfo tableInfo) {
-        return TableInfoVo.objToVo(tableInfo);
+        // 对象转封装类
+        TableInfoVo tableInfoVo = TableInfoVo.objToVo(tableInfo);
+
+        // 可以根据需要为封装对象补充值，不需要的内容可以删除
+        // region 可选
+        // 1. 关联查询用户信息
+        Long userId = tableInfo.getUserId();
+        User user = null;
+        if (userId != null && userId > 0) {
+            user = userService.getById(userId);
+        }
+        UserVO userVO = userService.getUserVO(user);
+        tableInfoVo.setUser(userVO);
+        // endregion
+
+        return tableInfoVo;
     }
 
     /**
@@ -143,22 +160,21 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
             return tableInfoVoPage;
         }
         // 对象列表 => 封装对象列表
-        List<TableInfoVo> tableInfoVoList = tableInfoList.stream().map(TableInfoVo::objToVo).collect(Collectors.toList());
+        List<TableInfoVo> tableInfoVoList = tableInfoList.stream().map(TableInfoVo::objToVo).toList();
 
         //  可以根据需要为封装对象补充值，不需要的内容可以删除
         // region 可选
         // 1. 关联查询用户信息
         Set<Long> userIdSet = tableInfoList.stream().map(TableInfo::getUserId).collect(Collectors.toSet());
-        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
-                .collect(Collectors.groupingBy(User::getId));
+        Map<Long, User> userIdUserMap = userService.listByIds(userIdSet).stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
         // 填充信息
-        tableInfoVoList.forEach(tableInfoVo -> {
-            Long userId = tableInfoVo.getUserId();
-            User user = null;
-            if (userIdUserListMap.containsKey(userId)) {
-                user = userIdUserListMap.get(userId).get(0);
+        tableInfoVoList.forEach(topicLevelVo -> {
+            Long userId = topicLevelVo.getUserId();
+            if (userId != null && userIdUserMap.containsKey(userId)) {
+                User user = userIdUserMap.get(userId);
+                topicLevelVo.setUser(userService.getUserVO(user));
             }
-            tableInfoVo.setUser(userService.getUserVO(user));
         });
         // endregion
 
@@ -305,7 +321,7 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
     @Override
     public Page<TableInfoVo> listMyTableInfoVoByPage(TableInfoQueryRequest tableInfoQueryRequest) {
         User loginUser = userService.getLoginUser();
-        tableInfoQueryRequest.setId(loginUser.getId());
+        tableInfoQueryRequest.setUserId(loginUser.getId());
         long current = tableInfoQueryRequest.getCurrent();
         long size = tableInfoQueryRequest.getPageSize();
         // 限制爬虫
