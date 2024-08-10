@@ -13,11 +13,6 @@ import java.io.Serializable;
 public class TopicLevelAddRequest implements Serializable {
 
     /**
-     * id
-     */
-    private Long id;
-
-    /**
      * 关卡中文名
      */
     private String title;
