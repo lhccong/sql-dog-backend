@@ -23,12 +23,10 @@ public abstract class TestBase {
     @Autowired
     protected MockMvc mockMvc;
 
-
     @BeforeAll
     public static void beforeAll() {
-        RedisServer redisServer = RedisServer.builder().setting("maxheap 200m").port(6379).build();
+        RedisServer redisServer = RedisServer.builder().setting("maxheap 200m").port(6337).build();
         redisServer.start();
     }
-
 
 }

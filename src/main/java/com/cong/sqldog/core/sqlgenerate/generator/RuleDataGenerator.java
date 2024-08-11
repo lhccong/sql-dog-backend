@@ -1,7 +1,7 @@
 package com.cong.sqldog.core.sqlgenerate.generator;
 
-import com.cong.sqldog.core.sqlgenerate.schema.TableSchema.Field;
 import com.mifmif.common.regex.Generex;
+import com.cong.sqldog.core.sqlgenerate.schema.TableSchema.Field;
 
 import java.util.ArrayList;
 import java.util.List;

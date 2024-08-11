@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import jakarta.annotation.Resource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,16 +31,7 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        //TODO 待做
-        // 本 list 仅做模拟，实际项目中要根据具体业务逻辑来查询权限
-        List<String> list = new ArrayList<>();
-        list.add("101");
-        list.add("user.add");
-        list.add("user.update");
-        list.add("user.get");
-        list.add("user.delete");
-        list.add("art.*");
-        return list;
+        return Collections.emptyList();
     }
 
     /**
@@ -55,7 +47,6 @@ public class StpInterfaceImpl implements StpInterface {
         if (currentUser == null || currentUser.getId() == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
-        //TODO 后面使用Redis来改造 从数据库查询（追求性能的话可以注释，直接走缓存）
         long userId = currentUser.getId();
         currentUser = userService.getById(userId);
         if (currentUser == null) {

@@ -2,30 +2,22 @@ spring:
   # 数据库配置
   # todo 需替换配置
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://43.142.117.210:3306/sql_dog
-    username: root
-    password: jinli
-#  datasource:
-#    driver-class-name: org.h2.Driver
-#    url: jdbc:h2:mem:test;MODE=MySQL;DATABASE_TO_UPPER=false #H2 数据库的默认连接地址
-#    username: test
-#    password: test
-#  h2:
-#    console:
-#      enabled: true  # 启用H2控制台
-#  jpa:
-#    hibernate:
-#      ddl-auto: update  # 自动创建/更新数据库表
-#    show-sql: true  # 显示生成的SQL
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test #H2 数据库的默认连接地址
+    username: test
+    password: test
   # Redis 配置
   # todo 需替换配置，然后取消注释
   data:
     redis:
       database: 1
       host: localhost
-      port: 6379
+      port: 6337
       timeout: 5000
+  sql:
+    init:
+      schema-locations: classpath:db/h2/schema.sql
+      data-locations: classpath:db/h2/data.sql
 # 对象存储
 # todo 需替换配置
 cos:
@@ -59,7 +51,7 @@ sa-token:
 sql:
   slow:
     mirror:
-      analysisSwitch: true #是否开启 SQL 分析
+      analysisSwitch: false #是否开启 SQL 分析
       #      onlyCheckOnce: true  #是否只分析一次
       #      checkInterval: 300000  #分析间隔 只有 onlyCheckOnce 为 false 的时候才有效
       ##      exceptSqlIds: com.cong.example.mapper.TaskMapper.selectList,com.cong.example.mapper.TaskMapper.xxx #不需要分析的 SQL ID

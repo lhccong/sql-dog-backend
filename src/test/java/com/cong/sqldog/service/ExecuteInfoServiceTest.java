@@ -46,6 +46,7 @@ class ExecuteInfoServiceTest extends TestBase {
     void setUp() {
         User mockUser = new User();
         mockUser.setId(1816001696590692353L);
+        mockUser.setUserRole("admin");
 
 
         // 模拟 getLoginUser 方法返回 mockUser
@@ -90,7 +91,7 @@ class ExecuteInfoServiceTest extends TestBase {
         System.out.println(UserRoleEnum.ADMIN.getValue());
         // 准备测试数据
         DeleteRequest deleteRequest = new DeleteRequest();
-        deleteRequest.setId(2L);
+        deleteRequest.setId(2488L);
 
         // 发送请求并验证结果
         mockMvc.perform(MockMvcRequestBuilders.post("/executeInfo/delete")
@@ -110,7 +111,7 @@ class ExecuteInfoServiceTest extends TestBase {
     void editTableExecuteInfo() throws Exception {
 
         // 准备测试数据
-        Long id = 3L;
+        Long id = 2488L;
         String sqlContent = "update execute_info set sqlContent = update execute";
         String sqlAnalyzeResult = "SQL分析结果：还需努力";
         Integer reviewStatus = 0;
@@ -143,7 +144,7 @@ class ExecuteInfoServiceTest extends TestBase {
     void UpdateTableExecuteInfo() throws Exception {
 
         // 准备测试数据
-        Long id = 3L;
+        Long id = 2488L;
         String sqlContent = "update execute_info set sqlContent = update execute";
         String sqlAnalyzeResult = "SQL分析结果：还行";
         Integer reviewStatus = 0;
@@ -175,7 +176,7 @@ class ExecuteInfoServiceTest extends TestBase {
      */
     @Test
     void getTableExecuteInfoById() throws Exception {
-        long id = 3L;
+        long id = 2488L;
         mockMvc.perform(MockMvcRequestBuilders.get("/executeInfo/get/vo")
                         .param("id", String.valueOf(id)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -251,7 +252,7 @@ class ExecuteInfoServiceTest extends TestBase {
     void doReviewTest() throws Exception {
         // 准备测试数据
         ReviewRequest reviewRequest = new ReviewRequest();
-        reviewRequest.setId(3L);
+        reviewRequest.setId(2488L);
         reviewRequest.setReviewStatus(2);
         reviewRequest.setReviewMessage("审核不通过");
 

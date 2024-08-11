@@ -136,12 +136,6 @@
             <scope>test</scope>
         </dependency>
         <!---==================单元测试配置=======================-->
-        <!-- h2 单元测试 -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
         <!-- Redis 单元测试启动 -->
         <dependency>
             <groupId>it.ozimov</groupId>
@@ -156,7 +150,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- h2 单元测试 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!---========================单元测试配置====================-->
+
         <dependency>
             <groupId>com.github.whvcse</groupId>
             <artifactId>easy-captcha</artifactId>
@@ -174,7 +175,6 @@
             <artifactId>druid</artifactId>
             <version>1.2.12</version>
         </dependency>
-
     </dependencies>
 
     <build>

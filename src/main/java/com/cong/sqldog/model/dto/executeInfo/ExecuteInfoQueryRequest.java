@@ -16,14 +16,29 @@ import java.io.Serializable;
 @Data
 public class ExecuteInfoQueryRequest extends PageRequest implements Serializable {
 
+    /**
+     * id
+     */
     private Long id;
 
+    /**
+     * 执行SQL的内容
+     */
     private String sqlContent;
 
+    /**
+     * SQL分析结果
+     */
     private String sqlAnalyzeResult;
 
+    /**
+     * 审核状态（0-待审核, 1-审核通过, 2-审核不通过）
+     */
     private Integer reviewStatus;
 
+    /**
+     * 审核信息
+     */
     private String reviewMessage;
 
 

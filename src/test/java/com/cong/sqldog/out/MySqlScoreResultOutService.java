@@ -1,8 +1,8 @@
 package com.cong.sqldog.out;
 
-import com.cong.sqldog.sqlanalyze.out.SqlScoreResultOutService;
-import com.cong.sqldog.sqlanalyze.score.SqlScoreResult;
-import com.cong.sqldog.sqlanalyze.score.SqlScoreResultDetail;
+import com.cong.sqldog.core.sqlanalyze.out.SqlScoreResultOutService;
+import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResult;
+import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResultDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

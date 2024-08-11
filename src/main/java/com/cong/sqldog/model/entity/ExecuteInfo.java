@@ -23,43 +23,39 @@ public class ExecuteInfo implements Serializable {
     /**
      * 执行 SQL 的内容
      */
-    @TableField(value = "sqlContent")
     private String sqlContent;
 
     /**
      * SQL 分析结果
      */
-    @TableField(value = "sqlAnalyzeResult")
     private String sqlAnalyzeResult;
 
     /**
      * 状态（0-待审核, 1-通过, 2-拒绝）
      */
-    @TableField(value = "reviewStatus")
+
     private Integer reviewStatus;
 
     /**
      * 审核信息
      */
-    @TableField(value = "reviewMessage")
     private String reviewMessage;
 
     /**
      * 创建用户 id
      */
-    @TableField(value = "userId",fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT)
     private Long userId;
 
     /**
      * 创建时间
      */
-    @TableField(value = "createTime")
+
     private Date createTime;
 
     /**
      * 更新时间
      */
-    @TableField(value = "updateTime")
     private Date updateTime;
 
     /**

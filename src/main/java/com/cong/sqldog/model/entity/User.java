@@ -13,7 +13,7 @@ import lombok.Data;
  * 用户
  * # @author <a href="https://github.com/lhccong">程序员聪</a>
  */
-@TableName(value = "user")
+@TableName(value = "user_info")
 @Data
 public class User implements Serializable {
 

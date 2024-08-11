@@ -1,9 +1,9 @@
 package com.cong.sqldog.core.sqlgenerate.model.dto;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import java.util.List;
 
 /**
  * Java 对象生成封装类

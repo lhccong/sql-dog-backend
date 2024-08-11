@@ -50,7 +50,7 @@ public class TypeScriptBuilder {
         List<FieldTypeScriptDTO> fieldDTOList = new ArrayList<>();
         tableSchema.getFieldList().forEach(field -> {
             FieldTypeScriptDTO fieldDTO = new FieldTypeScriptDTO()
-                    .setComment(field.getComment())
+                    .setComment(Optional.ofNullable(field.getComment()).orElse(""))
                     .setTypescriptType(Optional.ofNullable(FieldTypeEnum.getEnumByValue(field.getFieldType())).orElse(FieldTypeEnum.TEXT).getTypescriptType())
                     .setFieldName(CharSequenceUtil.toCamelCase(field.getFieldName()));
             fieldDTOList.add(fieldDTO);
