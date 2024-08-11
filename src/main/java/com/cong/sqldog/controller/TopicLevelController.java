@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/topicLevel")
 @Slf4j
-@Tag(name = "关卡题目接口")
+//@Tag(name = "关卡题目接口")
 public class TopicLevelController {
 
     @Resource

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/tableInfo")
 @Slf4j
-@Tag(name = "表信息接口")
+//@Tag(name = "表信息接口")
 public class TableInfoController {
 
     @Resource

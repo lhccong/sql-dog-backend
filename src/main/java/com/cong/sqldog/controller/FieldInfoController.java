@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/fieldInfo")
 @Slf4j
-@Tag(name = "字段信息接口")
+//@Tag(name = "字段信息接口")
 public class FieldInfoController {
 
     @Resource
