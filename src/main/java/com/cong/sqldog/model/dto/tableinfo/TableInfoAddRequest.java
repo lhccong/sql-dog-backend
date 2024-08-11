@@ -14,11 +14,6 @@ import java.io.Serializable;
 public class TableInfoAddRequest implements Serializable {
 
     /**
-     * id
-     */
-    private Long id;
-
-    /**
      * 名称
      */
     private String name;
