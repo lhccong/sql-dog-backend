@@ -51,7 +51,7 @@ public class PlantUmlBuilder {
             PlantUmlGenerateDTO.FieldDTO fieldDTO = new PlantUmlGenerateDTO.FieldDTO()
                     .setFieldName(field.getFieldName())
                     .setFieldType(fieldTypeEnum.getValue())
-                    .setFieldComment(field.getComment());
+                    .setFieldComment(Optional.ofNullable(field.getComment()).orElse(""));
             fieldList.add(fieldDTO);
         });
 
