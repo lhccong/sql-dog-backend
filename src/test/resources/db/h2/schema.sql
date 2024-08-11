@@ -13,6 +13,14 @@ create database if not exists sql_dog;
 -- 切换库
 use sql_dog;
 
+-- -- 设置H2以模拟MySQL的模式
+-- SET MODE MySQL;
+--
+-- -- 创建并使用模式
+-- CREATE SCHEMA IF NOT EXISTS sql_dog;
+-- SET SCHEMA sql_dog;
+
+
 -- 用户表
 create table if not exists user
 (
@@ -99,3 +107,16 @@ create table if not exists topic_level
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除'
     ) comment '关卡题目';
+
+-- SQL 执行记录表
+CREATE TABLE IF NOT EXISTS execute_info (
+                                            id               BIGINT AUTO_INCREMENT PRIMARY KEY, -- 自增 id
+                                            sqlContent       VARCHAR(512),                      -- 执行 SQL 的内容
+                                            sqlAnalyzeResult VARCHAR(512),                      -- SQL 分析结果
+                                            reviewStatus     INT DEFAULT 0 NOT NULL,            -- 状态（0-待审核, 1-通过, 2-拒绝）
+                                            reviewMessage    VARCHAR(512),                      -- 审核信息
+                                            userId           BIGINT NOT NULL,                   -- 创建用户 id
+                                            createTime       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 创建时间
+                                            updateTime       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL, -- 更新时间
+                                            isDelete         TINYINT DEFAULT 0 NOT NULL         -- 是否删除
+);

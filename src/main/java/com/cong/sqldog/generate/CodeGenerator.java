@@ -1,6 +1,6 @@
 package com.cong.sqldog.generate;
 
-import com.cong.sqldog.model.entity.User;
+import com.cong.sqldog.model.entity.ExecuteInfo;
 
 /**
  * 代码生成器
@@ -16,11 +16,11 @@ public class CodeGenerator {
         // 代码生成处理器
         new GenerateProcessor()
                 // 生成项目路径
-                .packageName("com.cong.springbootinit")
+                .packageName("com.cong.sqldog")
                 // 排除字段策略
                 .exclusionStrategy("serialVersionUID", "isDelete","updateTime","createTime")
                 // 继续追加process(数据类.class, "数据别名")
-                .process(User.class, "用户");
+                .process(ExecuteInfo.class, "SQL执行记录");
 
     }
 }

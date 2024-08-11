@@ -157,6 +157,24 @@
             </exclusions>
         </dependency>
         <!---========================单元测试配置====================-->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <!-- https://github.com/datafaker-net/datafaker 模拟数据-->
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid SQL解析+数据源监控-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+
     </dependencies>
 
     <build>

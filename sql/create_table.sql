@@ -65,7 +65,7 @@ create index idx_name
     on field_info (name);
 
 -- SQL 执行记录表
-create table if not exists level_info
+create table if not exists execute_info
 (
     id               bigint auto_increment comment 'id' primary key,
     sqlContent       varchar(512)                       null comment '执行 SQL 的内容',
@@ -77,6 +77,7 @@ create table if not exists level_info
     updateTime       datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete         tinyint  default 0                 not null comment '是否删除'
 ) comment 'SQL执行记录';
+
 
 -- 关卡题目表
 create table if not exists topic_level
