@@ -40,6 +40,8 @@ public class GeneratorFacade {
         String javaObjectCode = JavaCodeBuilder.buildJavaObjectCode(tableSchema, dataList);
         // 生成 typescript 类型代码
         String typescriptTypeCode = TypeScriptBuilder.buildTypeScriptTypeCode(tableSchema);
+        // 生成 plantuml 类型代码
+        String plantUmlCode = PlantUmlBuilder.buildPlantUmlCode(tableSchema);
         log.info("建数据结束");
 
         // 封装返回
@@ -51,7 +53,8 @@ public class GeneratorFacade {
                 .setDataList(dataList)
                 .setJavaEntityCode(javaEntityCode)
                 .setJavaObjectCode(javaObjectCode)
-                .setTypescriptTypeCode(typescriptTypeCode);
+                .setTypescriptTypeCode(typescriptTypeCode)
+                .setPlantUmlCode(plantUmlCode);
     }
 
     /**

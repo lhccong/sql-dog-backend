@@ -57,4 +57,9 @@ public class GenerateVO {
      */
     private String typescriptTypeCode;
 
+    /**
+     * PlantUML 类型代码
+     */
+    private String plantUmlCode;
+
 }
