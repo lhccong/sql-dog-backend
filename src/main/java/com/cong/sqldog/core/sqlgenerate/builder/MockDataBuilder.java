@@ -47,8 +47,8 @@ public class MockDataBuilder {
     }
 
     private static boolean isNumber(Field field) {
-        return field.getFieldType().equalsIgnoreCase("bigint")
-                || field.getFieldType().equalsIgnoreCase("int")
-                || field.getFieldType().equalsIgnoreCase("tinyint");
+        return "bigint".equalsIgnoreCase(field.getFieldType())
+                || "int".equalsIgnoreCase(field.getFieldType())
+                || "tinyint".equalsIgnoreCase(field.getFieldType());
     }
 }
