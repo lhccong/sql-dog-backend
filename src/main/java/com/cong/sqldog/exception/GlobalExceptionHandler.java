@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         if (e instanceof NotRoleException) {
             return ResultUtils.error(ErrorCode.NO_AUTH_ERROR);
         }
-        return ResultUtils.error(e.getCode(), e.getMessage());
+        return ResultUtils.error(ErrorCode.NOT_LOGIN_ERROR);
     }
 
     @ExceptionHandler(RuntimeException.class)
