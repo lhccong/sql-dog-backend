@@ -47,15 +47,14 @@ public class PlantUmlBuilder {
         // 依次填充每一列
         List<PlantUmlGenerateDTO.FieldDTO> fieldList = new ArrayList<>();
         tableSchema.getFieldList().forEach(field -> {
-            FieldTypeEnum fieldTypeEnum = Optional.ofNullable(FieldTypeEnum.getEnumByValue(field.getFieldType())).orElse(FieldTypeEnum.TEXT);
             PlantUmlGenerateDTO.FieldDTO fieldDTO = new PlantUmlGenerateDTO.FieldDTO()
                     .setFieldName(field.getFieldName())
-                    .setFieldType(fieldTypeEnum.getValue())
+                    .setFieldType(field.getFieldType())
                     .setFieldComment(Optional.ofNullable(field.getComment()).orElse(""));
             fieldList.add(fieldDTO);
         });
 
-        // // 创建 PlantUmlGenerateDTO 对象，填充模板,传递参数
+        // 创建 PlantUmlGenerateDTO 对象，填充模板,传递参数
         PlantUmlGenerateDTO plantUmlGenerateDTO = new PlantUmlGenerateDTO();
         plantUmlGenerateDTO.setTableName(tableName);
         plantUmlGenerateDTO.setTableComment(tableComment);
