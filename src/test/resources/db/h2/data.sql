@@ -29,3 +29,10 @@ INSERT INTO topic_level(id, title, initSQL, mdContent, defaultSQL, answer, hint,
 VALUES (100, '测试测试表', 'select * from table_info', 'test', 'select * from table_info','select * from table_info', 'test', 'custom', 99, 101, 1818965526718836738, '2024-08-06 08:35:53', '2024-08-06 08:35:53', 0);
 INSERT INTO topic_level(id, title, initSQL, mdContent, defaultSQL, answer, hint, type, preLevelId, nextLevelId, userId, createTime, updateTime, isDelete)
 VALUES (101, '测试测试表', 'select * from table_info', 'test', 'select * from table_info','select * from table_info', 'test', 'custom', 99, 101, 1818965526718836738, '2024-08-06 08:35:53', '2024-08-06 08:35:53', 0);
+
+-- execute_info 表语句
+INSERT INTO execute_info(id, sqlContent, sqlAnalyzeResult, reviewStatus, reviewMessage, userId, createTime, updateTime, isDelete)
+values (1399, 'select * from table_info','分析', 0, '审核中', 1816001696590692353, '2024-08-11 22:19:53', '2024-08-11 22:19:53', 0);
+
+INSERT INTO execute_info(id, sqlContent, sqlAnalyzeResult, reviewStatus, reviewMessage, userId, createTime, updateTime, isDelete)
+values (2488, 'select * from table_info','SQL分析结果', 1, '审核通过', 1816001696590692353, '2024-08-11 22:19:53', '2024-08-11 22:19:53', 0);

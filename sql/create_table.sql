@@ -78,6 +78,7 @@ create table if not exists execute_info
     isDelete         tinyint  default 0                 not null comment '是否删除'
 ) comment 'SQL执行记录';
 
+
 -- 关卡题目表
 create table if not exists topic_level
 (

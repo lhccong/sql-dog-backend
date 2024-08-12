@@ -86,3 +86,18 @@ CREATE TABLE topic_level
     updateTime  TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '更新时间',
     isDelete    BOOLEAN   DEFAULT FALSE             NOT NULL COMMENT '是否删除'
 );
+
+-- SQL 执行记录表
+CREATE TABLE IF NOT EXISTS execute_info
+(
+    id               BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT 'ID',
+    sqlContent       VARCHAR(512)            NULL COMMENT '执行 SQL 的内容',
+    sqlAnalyzeResult VARCHAR(512)            NULL COMMENT 'SQL 分析结果',
+    reviewStatus     INT     DEFAULT 0       NOT NULL COMMENT '状态（0-待审核, 1-通过, 2-拒绝）',
+    reviewMessage    VARCHAR(512)            NULL COMMENT '审核信息',
+    userId           BIGINT                  NOT NULL COMMENT '创建用户 ID',
+    createTime       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT '创建时间',
+    updateTime       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL  COMMENT '更新时间',
+    isDelete         TINYINT  DEFAULT 0      NOT NULL COMMENT '是否删除'
+);
+
