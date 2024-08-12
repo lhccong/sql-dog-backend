@@ -174,17 +174,13 @@ public class ExecuteInfoServiceImpl extends ServiceImpl<ExecuteInfoMapper, Execu
         //参数校验
         ThrowUtils.throwIf(executeInfoAddRequest == null, ErrorCode.PARAMS_ERROR);
 
-        // 获取登录用户
-        User loginUser = userService.getLoginUser();
-        // 仅本人和管理员可以添加
-        Long userId= executeInfoAddRequest.getUserId();
-        if (!userId.equals(loginUser.getId()) && !userService.isAdmin()) {
-            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
-        }
         //实体类和DTO转换
         ExecuteInfo executeInfo = new ExecuteInfo();
         BeanUtils.copyProperties(executeInfoAddRequest, executeInfo);
 
+        // 获取登录用户，填入userId
+        User loginUser = userService.getLoginUser();
+        executeInfo.setUserId(loginUser.getId());
         //数据校验
         this.validExecuteInfo(executeInfo, true);
 
