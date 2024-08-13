@@ -6,6 +6,12 @@ package com.cong.sqldog.constant;
  */
 public interface CommonConstant {
 
+
+    /**
+     * 标题
+     */
+    String TITLE = "title";
+
     /**
      * 升序
      */

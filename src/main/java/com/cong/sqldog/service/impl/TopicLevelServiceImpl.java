@@ -2,7 +2,6 @@ package com.cong.sqldog.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cong.sqldog.common.DeleteRequest;
@@ -45,6 +44,9 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
 
     @Resource
     private UserService userService;
+    @Resource
+    private TopicLevelMapper topicLevelMapper;
+
 
     /**
      * 校验数据
@@ -94,10 +96,10 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
             // 需要拼接查询条件
-            queryWrapper.and(qw -> qw.like("title", searchText).or().like("mdContent", searchText));
+            queryWrapper.and(qw -> qw.like(CommonConstant.TITLE, searchText).or().like("mdContent", searchText));
         }
         // 模糊查询
-        queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
+        queryWrapper.like(StringUtils.isNotBlank(title), CommonConstant.TITLE, title);
         queryWrapper.like(StringUtils.isNotBlank(mdContent), "mdContent", mdContent);
         // 精确查询
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
@@ -129,10 +131,10 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
             // 需要拼接查询条件
-            topicQueryWrapper.and(qw -> qw.like("title", searchText));
+            topicQueryWrapper.and(qw -> qw.like(CommonConstant.TITLE, searchText));
         }
         // 模糊查询
-        topicQueryWrapper.like(StringUtils.isNotBlank(title), "title", title);
+        topicQueryWrapper.like(StringUtils.isNotBlank(title), CommonConstant.TITLE, title);
         // 精确查询
         topicQueryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         topicQueryWrapper.eq(ObjectUtils.isNotEmpty(type), "type", type);
@@ -145,8 +147,8 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
 
     /**
      * 获取题目关卡封装
-     * @param topicLevel
-     * return TopicLevelVo
+     *
+     * @param topicLevel return TopicLevelVo
      */
     @Override
     public TopicLevelVo getTopicLevelVo(TopicLevel topicLevel) {
@@ -180,7 +182,7 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
      * 分页关卡题目列表封装
      *
      * @param topicLevelPage 分页数据
-     * return Page<TopicLevelVo>
+     *                       return Page<TopicLevelVo>
      */
     @Override
     public Page<TopicLevelVo> getTopicLevelVoPage(Page<TopicLevel> topicLevelPage) {
@@ -262,9 +264,9 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         // 填充默认值
 
         // 根据请求中的类型或用户角色类型设置关卡类型
-        if (topicLevelAddRequest.getType() != null){
+        if (topicLevelAddRequest.getType() != null) {
             topicLevel.setType(topicLevelAddRequest.getType());
-        }else {
+        } else {
             if (userService.isAdmin()) {
                 topicLevel.setType(TopicTypeEnum.SYSTEM.getValue());
             } else {
@@ -421,17 +423,16 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
      */
     @Override
     public Page<TopicVo> listTopicVoByPage(TopicQueryRequest topicQueryRequest) {
-        long current = topicQueryRequest.getCurrent();
         long size = topicQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
 
         // 查询数据库
-        IPage<TopicLevel> topicVoPage = this.page(new Page<>(current, size),
-                this.getTopicQueryWrapper(topicQueryRequest));
+        List<TopicVo> topicVoList = topicLevelMapper.selectTopicLevelsByPage(topicQueryRequest);
+        Page<TopicVo> topicVoPage = new Page<>(topicQueryRequest.getCurrent(), topicQueryRequest.getPageSize(), this.count(this.getTopicQueryWrapper(topicQueryRequest)));
+        topicVoPage.setRecords(topicVoList);
 
-        // 获取封装类
-        return this.getTopicVoPage((Page<TopicLevel>) topicVoPage);
+        return topicVoPage;
     }
 
 }

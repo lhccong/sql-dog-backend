@@ -5,24 +5,40 @@
 <mapper namespace="com.cong.sqldog.mapper.TopicLevelMapper">
 
     <resultMap id="BaseResultMap" type="com.cong.sqldog.model.entity.TopicLevel">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="initSQL" column="initSQL" jdbcType="VARCHAR"/>
-            <result property="mdContent" column="mdContent" jdbcType="VARCHAR"/>
-            <result property="defaultSQL" column="defaultSQL" jdbcType="VARCHAR"/>
-            <result property="answer" column="answer" jdbcType="VARCHAR"/>
-            <result property="hint" column="hint" jdbcType="VARCHAR"/>
-            <result property="type" column="type" jdbcType="VARCHAR"/>
-            <result property="userId" column="userId" jdbcType="BIGINT"/>
-            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
-            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="initSQL" column="initSQL" jdbcType="VARCHAR"/>
+        <result property="mdContent" column="mdContent" jdbcType="VARCHAR"/>
+        <result property="defaultSQL" column="defaultSQL" jdbcType="VARCHAR"/>
+        <result property="answer" column="answer" jdbcType="VARCHAR"/>
+        <result property="hint" column="hint" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+        <result property="userId" column="userId" jdbcType="BIGINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,title,initSQL,
+        id
+        ,title,initSQL,
         mdContent,defaultSQL,answer,
         hint,type,userId,
         createTime,updateTime,isDelete
     </sql>
+    <select id="selectTopicLevelsByPage" resultType="com.cong.sqldog.model.vo.TopicVo">
+        SELECT id,title,type FROM topic_level
+        <where>
+            <if test="topicQueryRequest.id != null">
+                AND id = #{topicQueryRequest.id}
+            </if>
+            <if test="topicQueryRequest.title != null">
+                AND title like concat('%',#{topicQueryRequest.title},'%')
+            </if>
+            <if test="topicQueryRequest.type != null">
+                AND `type` = #{topicQueryRequest.type}
+            </if>
+        </where>
+        LIMIT #{topicQueryRequest.pageSize} OFFSET #{topicQueryRequest.current}
+    </select>
 </mapper>
