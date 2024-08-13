@@ -212,7 +212,7 @@ class TopicLevelServiceTest extends TestBase {
         TopicQueryRequest topicQueryRequest = new TopicQueryRequest();
         // 设置分页参数
         topicQueryRequest.setPageSize(10);
-        topicQueryRequest.setCurrent(0);
+        topicQueryRequest.setCurrent(1);
 
         // 发送分页查询请求并验证结果
         mockMvc.perform(MockMvcRequestBuilders.post("/topicLevel/list/page/topic")

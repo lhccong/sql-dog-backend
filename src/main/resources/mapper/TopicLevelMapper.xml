@@ -39,6 +39,6 @@
                 AND `type` = #{topicQueryRequest.type}
             </if>
         </where>
-        LIMIT #{topicQueryRequest.pageSize} OFFSET #{topicQueryRequest.current}
+        LIMIT #{topicQueryRequest.pageSize} OFFSET (#{topicQueryRequest.current} - 1) * #{topicQueryRequest.pageSize}
     </select>
 </mapper>
