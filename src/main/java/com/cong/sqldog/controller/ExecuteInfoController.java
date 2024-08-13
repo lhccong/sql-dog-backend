@@ -29,7 +29,7 @@ import jakarta.annotation.Resource;
 @RestController
 @RequestMapping("/executeInfo")
 @Slf4j
-@Tag(name = "SQL执行记录接口")
+//@Tag(name = "SQL执行记录接口")
 public class ExecuteInfoController {
 
     @Resource
