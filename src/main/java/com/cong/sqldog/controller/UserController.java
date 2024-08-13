@@ -103,11 +103,11 @@ public class UserController {
      * 用户登录
      *
      * @param userLoginRequest 用户登录请求
-     * @return {@link BaseResponse}<{@link LoginUserVO}>
+     * @return {@link BaseResponse}<{@link TokenLoginUserVo}>
      */
     @PostMapping("/login")
     @Operation(summary = "用户登录")
-    public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest) {
+    public BaseResponse<TokenLoginUserVo> userLogin(@RequestBody UserLoginRequest userLoginRequest) {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -116,7 +116,7 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword);
+        TokenLoginUserVo loginUserVO = userService.userLogin(userAccount, userPassword);
         return ResultUtils.success(loginUserVO);
     }
 
