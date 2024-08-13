@@ -68,11 +68,8 @@ class ExecuteInfoServiceTest extends TestBase {
         // 准备测试数据
         ExecuteInfoAddRequest executeInfoAddRequest = new ExecuteInfoAddRequest();
         String sqlContent = "insert into execute_info(sqlContent) value(insert)";
-        long userId = 1816001696590692353L;
         Integer reviewStatus = 0;
-//        executeInfoAddRequest.setSqlContent(JSONUtil.toJsonStr(sqlContent));
         executeInfoAddRequest.setSqlContent(sqlContent);
-        executeInfoAddRequest.setUserId(userId);
         executeInfoAddRequest.setReviewStatus(reviewStatus);
         // 发送请求并验证结果
         mockMvc.perform(MockMvcRequestBuilders.post("/executeInfo/add")
@@ -113,9 +110,9 @@ class ExecuteInfoServiceTest extends TestBase {
         // 准备测试数据
         Long id = 2488L;
         String sqlContent = "update execute_info set sqlContent = update execute";
-        String sqlAnalyzeResult = "SQL分析结果：还需努力";
+        String sqlAnalyzeResult = "SQL Analyze Result ";
         Integer reviewStatus = 0;
-        String reviewMessage="正在审核中";
+        String reviewMessage="reviewing";
 
         //给用户编辑请求填入数据
         ExecuteInfoEditRequest executeInfoEditRequest = new ExecuteInfoEditRequest();
@@ -146,10 +143,9 @@ class ExecuteInfoServiceTest extends TestBase {
         // 准备测试数据
         Long id = 2488L;
         String sqlContent = "update execute_info set sqlContent = update execute";
-        String sqlAnalyzeResult = "SQL分析结果：还行";
+        String sqlAnalyzeResult = "SQL Analyze Result";
         Integer reviewStatus = 0;
-        String reviewMessage="正在审核中";
-        long userId = 1816001696590692353L;
+        String reviewMessage="reviewing";
 
         //给用户编辑请求填入数据
         ExecuteInfoEditRequest executeInfoEditRequest = new ExecuteInfoEditRequest();
@@ -158,7 +154,6 @@ class ExecuteInfoServiceTest extends TestBase {
         executeInfoEditRequest.setSqlAnalyzeResult(sqlAnalyzeResult);
         executeInfoEditRequest.setReviewStatus(reviewStatus);
         executeInfoEditRequest.setReviewMessage(reviewMessage);
-        executeInfoEditRequest.setUserId(userId);
 
         // 发送请求并验证结果
         mockMvc.perform(MockMvcRequestBuilders.post("/executeInfo/edit")
@@ -191,17 +186,8 @@ class ExecuteInfoServiceTest extends TestBase {
     @Test
     void getTableExecuteInfoByPage() throws Exception {
         ExecuteInfoQueryRequest executeInfoQueryRequest = new ExecuteInfoQueryRequest();
-        String searchText = "还行";
-        String sqlContent  = "update";
-        String sqlAnalyzeResult= "还";
-        Long id = 1L;
         Long userId = 3211234596590692353L;
-//        executeInfoQueryRequest.setSearchText(searchText);
-//        executeInfoQueryRequest.setSqlContent(sqlContent);
-//        executeInfoQueryRequest.setSqlAnalyzeResult(sqlAnalyzeResult);
-//        executeInfoQueryRequest.setCurrent(2);
-//        executeInfoQueryRequest.setPageSize(1);
-//        executeInfoQueryRequest.setId(id);
+
         executeInfoQueryRequest.setUserId(userId);
         mockMvc.perform(MockMvcRequestBuilders.post("/executeInfo/list/page")
                         .content(JSONUtil.toJsonStr(executeInfoQueryRequest)) // 将整个对象序列化为JSON字符串并作为请求体发送
@@ -219,7 +205,11 @@ class ExecuteInfoServiceTest extends TestBase {
     void getTableExecuteInfoVOByPage() throws Exception {
         ExecuteInfoQueryRequest executeInfoQueryRequest = new ExecuteInfoQueryRequest();
         Long userId = 1816001696590692353L;
+        int current = 1;
+        int size = 1;
         executeInfoQueryRequest.setUserId(userId);
+        executeInfoQueryRequest.setCurrent(current);
+        executeInfoQueryRequest.setPageSize(size);
         mockMvc.perform(MockMvcRequestBuilders.post("/executeInfo/list/page/vo")
                         .content(JSONUtil.toJsonStr(executeInfoQueryRequest)) // 将整个对象序列化为JSON字符串并作为请求体发送
                         .contentType(MediaType.APPLICATION_JSON)) // 设置请求体的内容类型为JSON
@@ -234,8 +224,12 @@ class ExecuteInfoServiceTest extends TestBase {
     void getTableExecuteInfoCurrentUserVOByPage() throws Exception {
         ExecuteInfoQueryRequest executeInfoQueryRequest = new ExecuteInfoQueryRequest();
         // 这里就算设置了userId，但是代码逻辑里会获取当前登录用户的userId，所以设置无效。
-        Long userId = 1816001696590692353L;
+        Long userId = 3211234596590692353L;
+        int current = 2;
+        int size = 1;
         executeInfoQueryRequest.setUserId(userId);
+        executeInfoQueryRequest.setCurrent(current);
+        executeInfoQueryRequest.setPageSize(size);
         mockMvc.perform(MockMvcRequestBuilders.post("/executeInfo/my/list/page/vo")
                         .content(JSONUtil.toJsonStr(executeInfoQueryRequest)) // 将整个对象序列化为JSON字符串并作为请求体发送
                         .contentType(MediaType.APPLICATION_JSON)) // 设置请求体的内容类型为JSON

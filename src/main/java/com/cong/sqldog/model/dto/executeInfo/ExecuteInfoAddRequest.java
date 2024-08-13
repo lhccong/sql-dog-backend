@@ -33,10 +33,6 @@ public class ExecuteInfoAddRequest implements Serializable {
      */
     private String reviewMessage;
 
-    /**
-     * 创建用户id
-     */
-    private Long userId;
     
     @Serial
     private static final long serialVersionUID = 1L;

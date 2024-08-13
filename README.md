@@ -34,7 +34,7 @@ SQL Dog 是一款基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于
 2. MySQL
 3. Redis
 4. Sa-Token
-5. sql-slow-mirror（自研 SQL 分析工具，项目地址：https://github.com/lhccong/sql-slow-mirror）
+5. sql-slow-mirror（自研 SQL 分析工具，项目地址：https://github.com/lhccong/sql-slow-mirror ）
 
 ## 做了哪些改进🔍
 
