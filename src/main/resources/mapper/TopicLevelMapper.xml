@@ -36,9 +36,9 @@
                 AND title like concat('%',#{topicQueryRequest.title},'%')
             </if>
             <if test="topicQueryRequest.type != null">
-                AND `type` = #{topicQueryRequest.type}
+                AND type = #{topicQueryRequest.type}
             </if>
         </where>
-        LIMIT #{topicQueryRequest.pageSize} OFFSET (#{topicQueryRequest.current} - 1) * #{topicQueryRequest.pageSize}
+        LIMIT #{topicQueryRequest.pageSize} OFFSET #{offset}
     </select>
 </mapper>

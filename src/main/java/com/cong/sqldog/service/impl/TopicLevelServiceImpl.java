@@ -424,11 +424,13 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
     @Override
     public Page<TopicVo> listTopicVoByPage(TopicQueryRequest topicQueryRequest) {
         long size = topicQueryRequest.getPageSize();
+        int current = topicQueryRequest.getCurrent();
+        long offset = (current - 1) * size;
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
 
         // 查询数据库
-        List<TopicVo> topicVoList = topicLevelMapper.selectTopicLevelsByPage(topicQueryRequest);
+        List<TopicVo> topicVoList = topicLevelMapper.selectTopicLevelsByPage(topicQueryRequest,offset);
         Page<TopicVo> topicVoPage = new Page<>(topicQueryRequest.getCurrent(), topicQueryRequest.getPageSize(), this.count(this.getTopicQueryWrapper(topicQueryRequest)));
         topicVoPage.setRecords(topicVoList);
 

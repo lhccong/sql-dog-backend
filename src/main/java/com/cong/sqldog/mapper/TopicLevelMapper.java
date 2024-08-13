@@ -20,9 +20,10 @@ public interface TopicLevelMapper extends BaseMapper<TopicLevel> {
      * 按页面选择主题级别
      *
      * @param topicQueryRequest 主题查询请求
+     * @param offset            抵消
      * @return {@link List }<{@link TopicVo }>
      */
-    List<TopicVo> selectTopicLevelsByPage(@Param("topicQueryRequest") TopicQueryRequest topicQueryRequest);
+    List<TopicVo> selectTopicLevelsByPage(@Param("topicQueryRequest") TopicQueryRequest topicQueryRequest, @Param("offset") long offset);
 }
 
 

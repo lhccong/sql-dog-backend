@@ -211,7 +211,6 @@ class TopicLevelServiceTest extends TestBase {
     void listTopicVoByPageTest() throws Exception {
         TopicQueryRequest topicQueryRequest = new TopicQueryRequest();
         // 设置分页参数
-        topicQueryRequest.setPageSize(10);
         topicQueryRequest.setCurrent(1);
 
         // 发送分页查询请求并验证结果
