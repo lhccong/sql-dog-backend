@@ -6,7 +6,7 @@ import com.cong.sqldog.core.sqlanalyze.builder.SqlAnalysisBuilder;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResult;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreService;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreServiceRulesEngine;
-import com.cong.sqldog.model.dto.sqlAnalysis.SqlAnalysisRequest;
+import com.cong.sqldog.model.dto.sql.SqlAnalysisRequest;
 import com.cong.sqldog.model.vo.sql.SqlAnalysisVO;
 import com.cong.sqldog.service.SqlService;
 import com.cong.sqldog.utils.GsonUtil;
