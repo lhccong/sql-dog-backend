@@ -31,7 +31,7 @@ public class FieldInfoEditRequest implements Serializable {
     /**
      * 字段信息（json）
      */
-    private ContentJson content;
+    private String content;
 
     /**
      * 序列化 id
