@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cong.sqldog.common.DeleteRequest;
+import com.cong.sqldog.common.ReviewRequest;
 import com.cong.sqldog.model.dto.topiclevel.*;
 import com.cong.sqldog.model.entity.TopicLevel;
 import com.cong.sqldog.model.vo.TopicLevelVo;
@@ -60,14 +61,6 @@ public interface TopicLevelService extends IService<TopicLevel> {
     Page<TopicLevelVo> getTopicLevelVoPage(Page<TopicLevel> topicLevelPage);
 
     /**
-     * 分页获取题目封装
-     *
-     * @param topicLevelPage 分页数据
-     * @return Page<TopicLevelVo>
-     */
-    Page<TopicVo> getTopicVoPage(Page<TopicLevel> topicLevelPage);
-
-    /**
      * 新增表信息
      */
     long addTopicLevel(TopicLevelAddRequest topicLevelAddRequest);
@@ -111,4 +104,9 @@ public interface TopicLevelService extends IService<TopicLevel> {
      * 分页获取关卡题目（封装类）
      */
     Page<TopicVo> listTopicVoByPage(TopicQueryRequest topicQueryRequest);
+
+    /**
+     * 关卡题目审核
+     */
+    Boolean doTopicReview(ReviewRequest reviewRequest);
 }

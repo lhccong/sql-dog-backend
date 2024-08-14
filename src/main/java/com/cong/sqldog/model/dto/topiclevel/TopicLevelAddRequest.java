@@ -38,6 +38,16 @@ public class TopicLevelAddRequest implements Serializable {
     private String answer;
 
     /**
+     * 上一个关卡 id
+     */
+    private Long preLevelId;
+
+    /**
+     * 下一个关卡 id
+     */
+    private Long nextLevelId;
+
+    /**
      * 关卡提示
      */
     private String hint;

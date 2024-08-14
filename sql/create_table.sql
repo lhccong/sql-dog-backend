@@ -90,6 +90,8 @@ create table if not exists topic_level
     answer      varchar(512)                       null comment '关卡标准答案',
     hint        varchar(256)                       null comment '关卡提示',
     type        varchar(256)                       null comment '关卡类别，custom 自定义、system 系统',
+    reviewStatus  int      default 0                 not null comment '状态（0-待审核, 1-通过, 2-拒绝）',
+    reviewMessage varchar(512)                       null comment '审核信息',
     preLevelId  bigint                             null comment '上一关卡的 id，没有则为 0',
     nextLevelId bigint                             null comment '下一关卡的 id，没有则为 0',
     userId      bigint                             not null comment '创建用户 id',
