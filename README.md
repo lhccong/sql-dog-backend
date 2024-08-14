@@ -47,3 +47,30 @@ SQL Dog 是一款基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于
 1. 安全问题，防止用户 SQL 注入（使用`webassembly` 技术，在前端运行  SQLite  完成初始化）。
 2. 如果不让用户之间的数据互相污染（前端使用  SQLite  完成初始化）。
 3. 如何解析用户输入的 SQL（[ Druid ](https://github.com/alibaba/druid)）。
+
+## 项目界面
+
+### 做题
+<p align="center">
+    <img src="./doc/img/img.png" width="780" />
+</p>
+
+### 执行结果
+<p align="center">
+    <img src="./doc/img/img_1.png" width="780" />
+</p>
+
+### 代码生成
+<p align="center">
+    <img src="./doc/img/img_2.png" width="780" />
+</p>
+
+### 选择关卡
+<p align="center">
+    <img src="./doc/img/img_3.png" width="780" />
+</p>
+
+### 用户信息
+<p align="center">
+    <img src="./doc/img/img_4.png" width="780" />
+</p>
