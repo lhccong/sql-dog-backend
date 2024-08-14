@@ -1,4 +1,4 @@
-package com.cong.sqldog.model.dto.sqlAnalysis;
+package com.cong.sqldog.model.dto.sql;
 
 import lombok.Data;
 

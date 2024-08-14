@@ -1,6 +1,5 @@
 package com.cong.sqldog.service;
 
-import cn.hutool.json.JSONUtil;
 import com.cong.sqldog.common.TestBase;
 import com.cong.sqldog.core.sqlanalyze.analysis.SqlAnalysisResult;
 import com.cong.sqldog.core.sqlanalyze.analysis.SqlAnalysisResultList;
@@ -8,27 +7,15 @@ import com.cong.sqldog.core.sqlanalyze.builder.SqlAnalysisBuilder;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResult;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreService;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreServiceRulesEngine;
-import com.cong.sqldog.model.dto.sqlAnalysis.SqlAnalysisRequest;
-import com.cong.sqldog.model.vo.sql.SqlAnalysisVO;
-import com.cong.sqldog.out.MySqlScoreResultOutService;
-import com.cong.sqldog.service.impl.SqlServiceImpl;
 import com.cong.sqldog.utils.GsonUtil;
 import com.cong.sqldog.utils.SQLiteToMySqlPlanConverter;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
 
 /**
  * @Author 香香
@@ -40,7 +27,6 @@ class SqlServiceTest extends TestBase {
      * 评分规则服务
      */
     private static final SqlScoreService sqlScoreService = new SqlScoreServiceRulesEngine();
-    private static final SQLiteToMySqlPlanConverter sqLiteToMySqlPlanConverter = new SQLiteToMySqlPlanConverter();
 
     private static final Logger log = LoggerFactory.getLogger(SqlServiceTest.class);
 

@@ -2,21 +2,16 @@ package com.cong.sqldog.controller;
 
 import cn.dev33.satoken.stp.StpLogic;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cong.sqldog.common.*;
-import com.cong.sqldog.exception.ThrowUtils;
-import com.cong.sqldog.model.dto.fieldinfo.*;
-import com.cong.sqldog.model.entity.FieldInfo;
+import com.cong.sqldog.common.DeleteRequest;
+import com.cong.sqldog.common.TestBase;
+import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
+import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
+import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
 import com.cong.sqldog.model.entity.User;
-import com.cong.sqldog.model.vo.FieldInfoVO;
-import com.cong.sqldog.model.vo.UserVO;
-import com.cong.sqldog.service.FieldInfoService;
 import com.cong.sqldog.service.UserService;
-import jakarta.annotation.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -73,33 +68,8 @@ class FieldInfoControllerTest extends TestBase {
         fieldInfoAddRequest.setName("name");
         // 字段名
         fieldInfoAddRequest.setFieldName("name");
-        ContentJson contentJson = new ContentJson();
-        // 字段名
-        contentJson.setFieldName("name");
-        // 字段类型
-        contentJson.setFieldType("String");
-        // 默认值
-        contentJson.setDefaultValue("zhangsan");
-        // 是否为空
-        contentJson.setNotNull(false);
-        // 注释
-        contentJson.setComment("comment");
-        // 是否主键
-        contentJson.setPrimaryKey(false);
-        // 是否自增
-        contentJson.setAutoIncrement(false);
-        // 模拟数据类型
-        contentJson.setMockType("name");
-        // 模拟规则
-        contentJson.setMockParams("demo");
-        // 字段更新动作
-        contentJson.setOnUpdate("demo");
-        // 字段更新动作
-        fieldInfoAddRequest.setContent(contentJson);
-        // 状态（0-待审核, 1-通过, 2-拒绝）
-        fieldInfoAddRequest.setReviewStatus(0);
-        // 审核信息
-        fieldInfoAddRequest.setReviewMessage("info1");
+        // 字段信息
+        fieldInfoAddRequest.setContent("{\"fieldName\":\"id\",\"comment\":\"主键\",\"fieldType\":\"bigint\",\"mockType\":\"不模拟\",\"notNull\":true,\"primaryKey\":true,\"autoIncrement\":true}");
 
         // 发送请求并验证结果
         mockMvc.perform(MockMvcRequestBuilders.post("/fieldInfo/add")

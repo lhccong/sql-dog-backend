@@ -1,6 +1,6 @@
 package com.cong.sqldog.service;
 
-import com.cong.sqldog.model.dto.sqlAnalysis.SqlAnalysisRequest;
+import com.cong.sqldog.model.dto.sql.SqlAnalysisRequest;
 import com.cong.sqldog.model.vo.sql.SqlAnalysisVO;
 
 /**

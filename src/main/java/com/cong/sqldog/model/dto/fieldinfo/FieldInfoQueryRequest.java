@@ -41,24 +41,9 @@ public class FieldInfoQueryRequest extends PageRequest implements Serializable {
     private Integer reviewStatus;
 
     /**
-     * 审核信息
-     */
-    private String reviewMessage;
-
-    /**
      * 创建用户 id
      */
     private Long userId;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
     /**
      * 搜索词

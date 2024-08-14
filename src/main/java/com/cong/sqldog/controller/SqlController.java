@@ -1,10 +1,14 @@
 package com.cong.sqldog.controller;
 
 import com.cong.sqldog.common.BaseResponse;
+import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
+import com.cong.sqldog.core.sqlgenerate.builder.TableSchemaBuilder;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
+import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.generate.GeneratorFacade;
-import com.cong.sqldog.model.dto.sqlAnalysis.SqlAnalysisRequest;
+import com.cong.sqldog.model.dto.sql.GenerateBySqlRequest;
+import com.cong.sqldog.model.dto.sql.SqlAnalysisRequest;
 import com.cong.sqldog.model.vo.sql.GenerateVO;
 import com.cong.sqldog.model.vo.sql.SqlAnalysisVO;
 import com.cong.sqldog.service.SqlService;
@@ -30,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SqlController {
 
     @Resource
-    SqlService sqlService;
+    private SqlService sqlService;
 
     /**
      * 根据表结构生成SQL
@@ -55,5 +59,21 @@ public class SqlController {
     public SqlAnalysisVO scoreBySql(@RequestBody SqlAnalysisRequest sqlAnalysisRequest) {
         return sqlService.getSqlScore(sqlAnalysisRequest);
     }
+
+    /**
+     * 根据 SQL 获取 schema
+     *
+     * @param sqlRequest 根据 SQL 生成请求体
+     * @return BaseResponse<TableSchema>
+     */
+    @PostMapping("/get/schema/sql")
+    public BaseResponse<TableSchema> getSchemaBySql(@RequestBody GenerateBySqlRequest sqlRequest) {
+        if (sqlRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 获取 tableSchema
+        return ResultUtils.success(TableSchemaBuilder.buildFromSql(sqlRequest.getSql()));
+    }
+
 
 }

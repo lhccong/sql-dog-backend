@@ -1,9 +1,7 @@
 package com.cong.sqldog.service.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,15 +10,18 @@ import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.constant.CommonConstant;
 import com.cong.sqldog.constant.FieldInfoReviewStatusConstant;
+import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.exception.ThrowUtils;
 import com.cong.sqldog.mapper.FieldInfoMapper;
-import com.cong.sqldog.model.dto.fieldinfo.*;
-import com.cong.sqldog.model.entity.*;
+import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
+import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
+import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
+import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
 import com.cong.sqldog.model.entity.FieldInfo;
+import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
 import com.cong.sqldog.model.vo.FieldInfoVO;
-import com.cong.sqldog.model.vo.TableInfoVo;
 import com.cong.sqldog.service.FieldInfoService;
 import com.cong.sqldog.service.UserService;
 import com.cong.sqldog.utils.SqlUtils;
@@ -30,6 +31,13 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author 香香
@@ -55,6 +63,9 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
     public long addFieldInfo(FieldInfoAddRequest fieldInfoAddRequest) {
         // 参数校验
         ThrowUtils.throwIf(fieldInfoAddRequest == null, ErrorCode.PARAMS_ERROR);
+
+        // 校验字段信息是否合法
+        this.processFieldInfo(fieldInfoAddRequest.getContent(),TableSchema.Field.class);
 
         // 实体类和 DTO 转换
         FieldInfo fieldInfo = new FieldInfo();
@@ -149,6 +160,9 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
+        // 校验字段信息是否合法
+        this.processFieldInfo(fieldInfoEditRequest.getContent(),TableSchema.Field.class);
+
         // 判断是否存在
         long id = fieldInfoEditRequest.getId();
         FieldInfo oldFieldInfo = getById(id);
@@ -190,6 +204,9 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         if (fieldInfoUpdateRequest == null || fieldInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+
+        // 校验字段信息是否合法
+        this.processFieldInfo(fieldInfoUpdateRequest.getContent(),TableSchema.Field.class);
 
         // 判断是否存在
         long id = fieldInfoUpdateRequest.getId();
@@ -386,6 +403,89 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
                 sortField);
 
         return queryWrapper;
+    }
+
+    /**
+     * 处理字段信息并验证字段值
+     *
+     * @param jsonString JSON 字符串
+     * @param fieldClass 目标字段类
+     * @throws BusinessException 如果包含未知字段或值类型不匹配
+     */
+    public void processFieldInfo(String jsonString, Class<?> fieldClass) throws BusinessException {
+        // 解析 JSON 字符串为 JSONObject
+        JSONObject jsonObject = JSONUtil.parseObj(jsonString);
+
+        // 获取有效字段及其类型
+        Map<String, Class<?>> validFieldTypes = getValidFieldTypes(fieldClass);
+
+        // 校验字段
+        for (String key : jsonObject.keySet()) {
+            if (!validFieldTypes.containsKey(key)) {
+                // 发现未知字段，立即抛出异常
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "包含未知字段: " + key);
+            }
+
+            // 获取字段类型
+            Class<?> fieldType = validFieldTypes.get(key);
+            Object value = jsonObject.get(key);
+
+            // 验证值类型是否匹配字段类型
+            if (!isValidType(value, fieldType)) {
+                throw new BusinessException(ErrorCode.PARAMS_ERROR, "字段 " + key + " 的值类型不匹配，期望类型: " + fieldType.getSimpleName());
+            }
+        }
+    }
+
+    /**
+     * 动态获取有效字段及其类型的映射
+     *
+     * @param clazz 要分析的类
+     * @return Map<String, Class<?>>
+     */
+    private static Map<String, Class<?>> getValidFieldTypes(Class<?> clazz) {
+        Map<String, Class<?>> fieldTypes = new HashMap<>();
+        for (Field field : clazz.getDeclaredFields()) {
+            fieldTypes.put(field.getName(), field.getType());
+        }
+        return fieldTypes;
+    }
+
+    /**
+     * 验证值的类型是否匹配字段的类型
+     *
+     * @param value 值
+     * @param fieldType 字段类型
+     * @return 是否匹配
+     */
+    private boolean isValidType(Object value, Class<?> fieldType) {
+        // 如果字段是基本类型且值为 null，则不匹配
+        if (value == null) {
+            return !fieldType.isPrimitive();
+        }
+
+        // 根据字段类型进行匹配
+        if (fieldType.isInstance(value)) {
+            return true;
+        }
+
+        if (fieldType == Integer.class || fieldType == int.class) {
+            return value instanceof Number;
+        }
+        if (fieldType == Long.class || fieldType == long.class) {
+            return value instanceof Number;
+        }
+        if (fieldType == Double.class || fieldType == double.class) {
+            return value instanceof Number;
+        }
+        if (fieldType == Boolean.class || fieldType == boolean.class) {
+            return value instanceof Boolean;
+        }
+        if (fieldType == String.class) {
+            return value instanceof String;
+        }
+
+        return false;
     }
 
     // endregion
