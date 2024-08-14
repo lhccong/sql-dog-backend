@@ -42,7 +42,7 @@ springdoc:
   api-docs:
     path: /v3/api-docs
   group-configs:
-    - group: 'SQL Dog'
+    - group: 'SQL-Dog'
       paths-to-match: '/**'
       packages-to-scan: com.cong.sqldog.controller
 # knife4j的增强配置，不需要增强可以不配
