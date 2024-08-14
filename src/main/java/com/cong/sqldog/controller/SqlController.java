@@ -56,8 +56,8 @@ public class SqlController {
      */
     @PostMapping("/score")
     @Operation(summary = "SQL 评分")
-    public SqlAnalysisVO scoreBySql(@RequestBody SqlAnalysisRequest sqlAnalysisRequest) {
-        return sqlService.getSqlScore(sqlAnalysisRequest);
+    public BaseResponse<SqlAnalysisVO> scoreBySql(@RequestBody SqlAnalysisRequest sqlAnalysisRequest) {
+        return ResultUtils.success(sqlService.getSqlScore(sqlAnalysisRequest));
     }
 
     /**
