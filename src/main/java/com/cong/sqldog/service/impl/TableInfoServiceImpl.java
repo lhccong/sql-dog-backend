@@ -89,6 +89,7 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         // 从对象中取值
         Long id = tableInfoQueryRequest.getId();
         String content = tableInfoQueryRequest.getContent();
+        String name = tableInfoQueryRequest.getName();
         String searchText = tableInfoQueryRequest.getSearchText();
         String sortField = tableInfoQueryRequest.getSortField();
         String sortOrder = tableInfoQueryRequest.getSortOrder();
@@ -97,10 +98,11 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         // 从多字段中搜索
         if (StringUtils.isNotBlank(searchText)) {
             // 需要拼接查询条件
-            queryWrapper.and(qw -> qw.like("title", searchText).or().like("content", searchText));
+            queryWrapper.and(qw -> qw.like("name", searchText).or().like("content", searchText));
         }
         // 模糊查询
         queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
+        queryWrapper.like(StringUtils.isNotBlank(name), "name", name);
         // 精确查询
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
