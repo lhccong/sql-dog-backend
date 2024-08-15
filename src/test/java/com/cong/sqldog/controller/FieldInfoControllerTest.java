@@ -6,6 +6,7 @@ import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.TestBase;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
+import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditReviewStatusRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
 import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.service.UserService;
@@ -15,6 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -144,5 +146,40 @@ class FieldInfoControllerTest extends TestBase {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+    }
+
+    /**
+     * 更改字段状态信息- 测试
+     *
+     */
+    @Test
+    void editFieldReviewStatusInfo() throws Exception {
+
+        FieldInfoEditReviewStatusRequest fieldInfoEditReviewStatusRequest = new FieldInfoEditReviewStatusRequest();
+        // mock
+        fieldInfoEditReviewStatusRequest.setId(1823665058548969473L);
+        fieldInfoEditReviewStatusRequest.setReviewStatus(1);
+        fieldInfoEditReviewStatusRequest.setReviewMessage("审批通过");
+
+        // 发送请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.post("/fieldInfo/edit/status")
+//                .contentType(MediaType.)
+                .content(JSONUtil.toJsonStr(fieldInfoEditReviewStatusRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+    }
+
+    @Test
+    void generateCreateSql() throws Exception{
+
+        Long id = 1823664821419798529L;
+        // 发送请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.get("/fieldInfo/generate/sql")
+                .param("id", id.toString())) // 作为查询参数传递 id
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+
     }
 }

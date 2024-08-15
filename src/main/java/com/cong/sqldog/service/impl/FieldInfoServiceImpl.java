@@ -14,10 +14,7 @@ import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.exception.ThrowUtils;
 import com.cong.sqldog.mapper.FieldInfoMapper;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
+import com.cong.sqldog.model.dto.fieldinfo.*;
 import com.cong.sqldog.model.entity.FieldInfo;
 import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
@@ -307,6 +304,33 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         return this.getFieldInfoVoPage(tableInfoPage);
     }
 
+    /**
+     * 根据 id 更改审批字段状态
+     *
+     * @param fieldInfoEditReviewStatusRequest 更改字段状态信息请求
+     * @return Boolean
+     */
+    @Override
+    public Boolean editReviewStatus(FieldInfoEditReviewStatusRequest fieldInfoEditReviewStatusRequest) {
+
+        // id 小于等于 0，报错请求参数错误
+        Long id = fieldInfoEditReviewStatusRequest.getId();
+        // 参数为空，id 小于等于 0，报错请求参数错误
+        ThrowUtils.throwIf(id == null || id <= 0, ErrorCode.PARAMS_ERROR,"请求 id 不存在");
+
+        // 获取 id 查询字段信息
+        FieldInfo fieldInfo = this.getById(id);
+        ThrowUtils.throwIf(fieldInfo == null, ErrorCode.NOT_FOUND_ERROR,"字段信息不存在");
+
+        // 设置字段状态及审核信息
+        fieldInfo.setReviewStatus(fieldInfoEditReviewStatusRequest.getReviewStatus());
+        fieldInfo.setReviewMessage(fieldInfoEditReviewStatusRequest.getReviewMessage());
+
+        // 更新字段信息
+        boolean result = this.updateById(fieldInfo);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return true;
+    }
     // region 工具方法
 
 

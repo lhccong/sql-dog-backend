@@ -2,15 +2,17 @@ package com.cong.sqldog.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
+import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
 import com.cong.sqldog.constant.UserConstant;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
+import com.cong.sqldog.core.sqlgenerate.builder.SqlBuilder;
+import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
+import com.cong.sqldog.exception.BusinessException;
+import com.cong.sqldog.model.dto.fieldinfo.*;
 import com.cong.sqldog.model.entity.FieldInfo;
 import com.cong.sqldog.model.vo.FieldInfoVO;
 import com.cong.sqldog.service.FieldInfoService;
@@ -143,6 +145,42 @@ public class FieldInfoController {
     public BaseResponse<Boolean> updateFieldInfo(@RequestBody FieldInfoUpdateRequest fieldInfoUpdateRequest) {
         boolean result = fieldInfoService.updateFieldInfoByAdmin(fieldInfoUpdateRequest);
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 更改审批字段状态
+     *
+     * @param fieldInfoEditReviewStatusRequest 更改字段状态信息请求
+     * @return {@link BaseResponse }<{@link FieldInfoVO }>
+     */
+    @PostMapping("/edit/status")
+    @Operation(summary = "更改审批字段状态")
+    @SaCheckRole(UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> editReviewStatus(@RequestBody FieldInfoEditReviewStatusRequest fieldInfoEditReviewStatusRequest) {
+        Boolean result = fieldInfoService.editReviewStatus(fieldInfoEditReviewStatusRequest);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 生成创建字段的 SQL
+     *
+     * @param id id
+     * @return BaseResponse<String>
+     */
+    @GetMapping("/generate/sql")
+    @Operation(summary = "生成创建字段的 SQL")
+    @SaCheckRole(value = {UserConstant.ADMIN_ROLE, UserConstant.DEFAULT_ROLE}, mode = SaMode.OR)
+    public BaseResponse<String> generateCreateSql(long id) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        FieldInfo fieldInfo = fieldInfoService.getById(id);
+        if (fieldInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        TableSchema.Field field = JSONUtil.toBean(fieldInfo.getContent(), TableSchema.Field.class);
+        SqlBuilder sqlBuilder = new SqlBuilder();
+        return ResultUtils.success(sqlBuilder.buildCreateFieldSql(field));
     }
 
     // endregion
