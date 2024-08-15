@@ -102,7 +102,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         ThrowUtils.throwIf(oldFieldInfo == null, ErrorCode.NOT_FOUND_ERROR);
 
         // 仅本人或管理员可删除
-        if (!oldFieldInfo.getId().equals(user.getId()) && !userService.isAdmin()) {
+        if (!oldFieldInfo.getUserId().equals(user.getId()) && !userService.isAdmin()) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
 
