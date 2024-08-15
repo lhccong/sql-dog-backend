@@ -4,7 +4,6 @@ import com.cong.sqldog.common.PageRequest;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 查询字段信息请求
@@ -34,11 +33,6 @@ public class FieldInfoQueryRequest extends PageRequest implements Serializable {
      * 字段信息（json）
      */
     private String content;
-
-    /**
-     * 状态（0-待审核, 1-通过, 2-拒绝）
-     */
-    private Integer reviewStatus;
 
     /**
      * 创建用户 id
