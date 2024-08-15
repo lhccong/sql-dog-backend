@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.ErrorCode;
+import com.cong.sqldog.common.ReviewRequest;
 import com.cong.sqldog.constant.CommonConstant;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.exception.ThrowUtils;
@@ -13,6 +14,7 @@ import com.cong.sqldog.mapper.TopicLevelMapper;
 import com.cong.sqldog.model.dto.topiclevel.*;
 import com.cong.sqldog.model.entity.TopicLevel;
 import com.cong.sqldog.model.entity.User;
+import com.cong.sqldog.model.enums.ReviewStatusEnum;
 import com.cong.sqldog.model.enums.TopicTypeEnum;
 import com.cong.sqldog.model.vo.TopicLevelVo;
 import com.cong.sqldog.model.vo.TopicVo;
@@ -59,6 +61,7 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         String initSQL = topicLevel.getInitSQL();
         String title = topicLevel.getTitle();
         String mdContent = topicLevel.getMdContent();
+        Integer reviewStatus = topicLevel.getReviewStatus();
         // 创建时，所有参数必须非空
         if (add && StringUtils.isAnyBlank(title, initSQL, mdContent)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -71,6 +74,9 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         }
         if (StringUtils.isNotBlank(mdContent) && mdContent.length() > 20000) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "文档内容过长");
+        }
+        if (reviewStatus != null && !ReviewStatusEnum.getValues().contains(reviewStatus)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
     }
 
@@ -91,6 +97,8 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         Long userId = topicLevelQueryRequest.getUserId();
         String sortField = topicLevelQueryRequest.getSortField();
         String sortOrder = topicLevelQueryRequest.getSortOrder();
+        String type = topicLevelQueryRequest.getType();
+        Integer reviewStatus = topicLevelQueryRequest.getReviewStatus();
 
         // 补充需要的查询条件
         // 从多字段中搜索
@@ -104,6 +112,8 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         // 精确查询
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(type), "type", type);
+        queryWrapper.eq(ObjectUtils.isNotEmpty(reviewStatus), "reviewStatus", reviewStatus);
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),
                 sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
@@ -126,6 +136,7 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         String type = topicQueryRequest.getType();
         String sortField = topicQueryRequest.getSortField();
         String sortOrder = topicQueryRequest.getSortOrder();
+        Integer reviewStatus = topicQueryRequest.getReviewStatus();
 
         // 补充需要的查询条件
         // 从多字段中搜索
@@ -138,6 +149,7 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         // 精确查询
         topicQueryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         topicQueryWrapper.eq(ObjectUtils.isNotEmpty(type), "type", type);
+        topicQueryWrapper.eq(ObjectUtils.isNotEmpty(reviewStatus), "reviewStatus", reviewStatus);
         // 排序规则
         topicQueryWrapper.orderBy(SqlUtils.validSortField(sortField),
                 CommonConstant.SORT_ORDER_ASC.equals(sortOrder),
@@ -213,25 +225,6 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
 
         topicLevelVoPage.setRecords(topicLevelVoList);
         return topicLevelVoPage;
-    }
-
-    /**
-     * 分页题目封装
-     *
-     * @param topicLevelPage 分页数据
-     * @return Page<TopicVo>
-     */
-    @Override
-    public Page<TopicVo> getTopicVoPage(Page<TopicLevel> topicLevelPage) {
-        List<TopicLevel> topicLevelList = topicLevelPage.getRecords();
-        Page<TopicVo> topicVoPage = new Page<>(topicLevelPage.getCurrent(), topicLevelPage.getSize(), topicLevelPage.getTotal());
-        if (CollUtil.isEmpty(topicLevelList)) {
-            return topicVoPage;
-        }
-        // 对象列表 => 封装对象列表
-        List<TopicVo> topicVoList = topicLevelList.stream().map(TopicVo::objToVo).toList();
-        topicVoPage.setRecords(topicVoList);
-        return topicVoPage;
     }
 
     /**
@@ -338,6 +331,8 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         if (!oldTopicLevel.getId().equals(loginUser.getId()) && !userService.isAdmin()) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
+        // 重置审核状态
+        topicLevel.setReviewStatus(ReviewStatusEnum.REVIEWING.getValue());
         // 操作数据库
         boolean result = this.updateById(topicLevel);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
@@ -428,13 +423,43 @@ public class TopicLevelServiceImpl extends ServiceImpl<TopicLevelMapper, TopicLe
         long offset = (current - 1) * size;
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-
+        // 只能看到过审
+        topicQueryRequest.setReviewStatus(ReviewStatusEnum.PASS.getValue());
         // 查询数据库
-        List<TopicVo> topicVoList = topicLevelMapper.selectTopicLevelsByPage(topicQueryRequest,offset);
+        List<TopicVo> topicVoList = topicLevelMapper.selectTopicLevelsByPage(topicQueryRequest, offset);
         Page<TopicVo> topicVoPage = new Page<>(topicQueryRequest.getCurrent(), topicQueryRequest.getPageSize(), this.count(this.getTopicQueryWrapper(topicQueryRequest)));
         topicVoPage.setRecords(topicVoList);
 
         return topicVoPage;
     }
 
+    /**
+     * 审核关卡题目
+     */
+    @Override
+    public Boolean doTopicReview(ReviewRequest reviewRequest) {
+        ThrowUtils.throwIf(reviewRequest == null, ErrorCode.PARAMS_ERROR);
+        Long id = reviewRequest.getId();
+        Integer reviewStatus = reviewRequest.getReviewStatus();
+        // 校验
+        ReviewStatusEnum reviewStatusEnum = ReviewStatusEnum.getEnumByValue(reviewStatus);
+        if (id == null || reviewStatusEnum == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 判断是否存在
+        TopicLevel oldTopicLevel = this.getById(id);
+        ThrowUtils.throwIf(oldTopicLevel == null, ErrorCode.NOT_FOUND_ERROR);
+        // 已是该状态
+        if (oldTopicLevel.getReviewStatus().equals(reviewStatus)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "请勿重复审核");
+        }
+        // 更新审核状态
+        TopicLevel topicLevel = new TopicLevel();
+        topicLevel.setId(id);
+        topicLevel.setReviewStatus(reviewStatus);
+        topicLevel.setReviewMessage(reviewRequest.getReviewMessage());
+        boolean result = this.updateById(topicLevel);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return true;
+    }
 }

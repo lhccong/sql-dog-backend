@@ -39,6 +39,16 @@ public class TopicLevelUpdateRequest implements Serializable {
     private String defaultSQL;
 
     /**
+     * 上一个关卡 id
+     */
+    private Long preLevelId;
+
+    /**
+     * 下一个关卡 id
+     */
+    private Long nextLevelId;
+
+    /**
      * 关卡标准答案
      */
     private String answer;
@@ -52,7 +62,17 @@ public class TopicLevelUpdateRequest implements Serializable {
      * 关卡类别，custom 自定义、system 系统
      */
     private String type;
-    
+
+    /**
+     * 审核状态：0-待审核, 1-通过, 2-拒绝
+     */
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    private String reviewMessage;
+
     @Serial
     private static final long serialVersionUID = 1L;
 }

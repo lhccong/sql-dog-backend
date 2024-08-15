@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.ResultUtils;
+import com.cong.sqldog.common.ReviewRequest;
 import com.cong.sqldog.constant.UserConstant;
 import com.cong.sqldog.model.dto.topiclevel.*;
 import com.cong.sqldog.model.entity.TopicLevel;
@@ -13,7 +14,6 @@ import com.cong.sqldog.model.vo.TopicLevelVo;
 import com.cong.sqldog.model.vo.TopicVo;
 import com.cong.sqldog.service.TopicLevelService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -157,6 +157,17 @@ public class TopicLevelController {
     public BaseResponse<Page<TopicVo>> listTopicVoByPage(@RequestBody TopicQueryRequest topicQueryRequest) {
         // 获取封装类
         return ResultUtils.success(topicLevelService.listTopicVoByPage(topicQueryRequest));
+    }
+
+    /**
+     * 表信息状态审核（仅管理员可用）
+     */
+    @PostMapping("/review")
+    @SaCheckRole(UserConstant.ADMIN_ROLE)
+    @Operation(summary = "表信息状态审核（仅管理员可用）")
+    public BaseResponse<Boolean> doTopicLevelReview(@RequestBody ReviewRequest reviewRequest) {
+        boolean result = topicLevelService.doTopicReview(reviewRequest);
+        return ResultUtils.success(result);
     }
 
     // endregion

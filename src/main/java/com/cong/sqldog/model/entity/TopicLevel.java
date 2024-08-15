@@ -57,6 +57,26 @@ public class TopicLevel implements Serializable {
     private String type;
 
     /**
+     * 状态(0-待审核,1-通过,2-拒绝)
+     */
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    private String reviewMessage;
+
+    /**
+     * 上一关卡的 id，没有则为 0
+     */
+    private Long preLevelId;
+
+    /**
+     * 下一关卡的 id，没有则为 0
+     */
+    private Long nextLevelId;
+
+    /**
      * 创建用户 id
      */
     @TableField(fill = FieldFill.INSERT)
@@ -66,16 +86,6 @@ public class TopicLevel implements Serializable {
      * 创建时间
      */
     private Date createTime;
-
-    /**
-     * 上一个关卡 id
-     */
-    private Long preLevelId;
-
-    /**
-     * 下一个关卡 id
-     */
-    private Long nextLevelId;
 
     /**
      * 更新时间
