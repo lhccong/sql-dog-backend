@@ -7,10 +7,7 @@ import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.ResultUtils;
 import com.cong.sqldog.constant.UserConstant;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
+import com.cong.sqldog.model.dto.fieldinfo.*;
 import com.cong.sqldog.model.entity.FieldInfo;
 import com.cong.sqldog.model.vo.FieldInfoVO;
 import com.cong.sqldog.service.FieldInfoService;
@@ -142,6 +139,20 @@ public class FieldInfoController {
     @SaCheckRole(UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateFieldInfo(@RequestBody FieldInfoUpdateRequest fieldInfoUpdateRequest) {
         boolean result = fieldInfoService.updateFieldInfoByAdmin(fieldInfoUpdateRequest);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 更改审批字段状态
+     *
+     * @param fieldInfoEditReviewStatusRequest 更改字段状态信息请求
+     * @return {@link BaseResponse }<{@link FieldInfoVO }>
+     */
+    @PostMapping("/edit/status")
+    @Operation(summary = "更改审批字段状态")
+    @SaCheckRole(UserConstant.ADMIN_ROLE)
+    public BaseResponse<Boolean> editReviewStatus(@RequestBody FieldInfoEditReviewStatusRequest fieldInfoEditReviewStatusRequest) {
+        Boolean result = fieldInfoService.editReviewStatus(fieldInfoEditReviewStatusRequest);
         return ResultUtils.success(result);
     }
 

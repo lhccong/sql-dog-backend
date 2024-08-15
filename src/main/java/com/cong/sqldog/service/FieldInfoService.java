@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cong.sqldog.common.DeleteRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
+import com.cong.sqldog.model.dto.fieldinfo.*;
 import com.cong.sqldog.model.entity.FieldInfo;
 import com.cong.sqldog.model.vo.FieldInfoVO;
 
@@ -102,4 +99,13 @@ public interface FieldInfoService extends IService<FieldInfo> {
      * @return Page<FieldInfoVO>
      */
     Page<FieldInfoVO> listMyFieldInfoVOByPage(FieldInfoQueryRequest fieldInfoQueryRequest);
+
+
+    /**
+     * 根据 id 更改审批字段状态
+     *
+     * @param fieldInfoEditReviewStatusRequest 更改字段状态信息请求
+     * @return Boolean
+     */
+    Boolean editReviewStatus(FieldInfoEditReviewStatusRequest fieldInfoEditReviewStatusRequest);
 }
