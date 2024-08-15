@@ -312,7 +312,7 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         Page<TableInfo> tableInfoPage = this.page(new Page<>(current, size),
-                this.getQueryWrapper(tableInfoQueryRequest));
+                this.getQueryWrapper(tableInfoQueryRequest).eq("reviewStatus", ReviewStatusEnum.PASS.getValue()));
         // 获取封装类
         return this.getTableInfoVoPage(tableInfoPage);
     }
