@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -162,10 +163,23 @@ class FieldInfoControllerTest extends TestBase {
 
         // 发送请求并验证结果
         mockMvc.perform(MockMvcRequestBuilders.post("/fieldInfo/edit/status")
-                .contentType(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.)
                 .content(JSONUtil.toJsonStr(fieldInfoEditReviewStatusRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+    }
+
+    @Test
+    void generateCreateSql() throws Exception{
+
+        Long id = 1823664821419798529L;
+        // 发送请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.get("/fieldInfo/generate/sql")
+                .param("id", id.toString())) // 作为查询参数传递 id
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+
     }
 }
