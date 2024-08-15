@@ -227,7 +227,7 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         TableInfo oldTableInfo = this.getById(id);
         ThrowUtils.throwIf(oldTableInfo == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!oldTableInfo.getId().equals(user.getId()) && !userService.isAdmin()) {
+        if (!oldTableInfo.getUserId().equals(user.getId()) && !userService.isAdmin()) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 操作数据库
