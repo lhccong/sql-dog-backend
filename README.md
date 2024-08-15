@@ -7,8 +7,8 @@
 <p align="center"><strong>基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于 SQL 刷题、SQL 解析，帮助人们解决 SQL 能力薄弱问题，帮助每个人成为 SQL 宗师🚀。。<br><em>持续更新中～</em></strong></p>
 <div align="center">
     <a href=""><img src="https://img.shields.io/badge/github-项目地址-yellow.svg?style=plasticr"></a>
-    <a href=""><img src="https://img.shields.io/badge/前端-项目地址-blueviolet.svg?style=plasticr"></a>
-    <a href=""><img src="https://img.shields.io/badge/前端-项目地址-blueviolet.svg?style=plasticr"></a>
+    <a href="https://github.com/lhccong/sql-dog-frontend"><img src="https://img.shields.io/badge/前端-项目地址-blueviolet.svg?style=plasticr"></a>
+    <a href=https://github.com/lhccong/sql-dog-backend""><img src="https://img.shields.io/badge/后端-项目地址-blueviolet.svg?style=plasticr"></a>
 </div>
 
 
