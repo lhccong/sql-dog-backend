@@ -4,6 +4,7 @@ import com.cong.sqldog.common.BaseResponse;
 import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ResultUtils;
 import com.cong.sqldog.core.sqlgenerate.builder.TableSchemaBuilder;
+import com.cong.sqldog.core.sqlgenerate.model.dto.GenerateByAutoRequest;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.generate.GeneratorFacade;
@@ -46,6 +47,13 @@ public class SqlController {
     @Operation(summary = "根据表结构生成SQL")
     public BaseResponse<GenerateVO> generateBySchema(@RequestBody TableSchema tableSchema) {
         return ResultUtils.success(GeneratorFacade.generateAll(tableSchema));
+    }
+    @PostMapping("/get/schema/auto")
+    public BaseResponse<TableSchema> getSchemaByAuto(@RequestBody GenerateByAutoRequest autoRequest) {
+        if (autoRequest == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success(TableSchemaBuilder.buildFromAuto(autoRequest.getContent()));
     }
 
     /**

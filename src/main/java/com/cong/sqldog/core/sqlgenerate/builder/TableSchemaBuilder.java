@@ -9,13 +9,14 @@ import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.core.sqlgenerate.builder.sql.MySQLDialect;
 import com.cong.sqldog.core.sqlgenerate.model.enums.MockTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
+import com.cong.sqldog.core.sqlgenerate.schema.TableSchema.Field;
 import com.cong.sqldog.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,6 +103,28 @@ public class TableSchemaBuilder {
         }
     }
 
+    public static TableSchema buildFromAuto(String content) {
+        if (StringUtils.isBlank(content)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 切分单词
+        String[] words = content.split("[,，]");
+        if (ArrayUtils.isEmpty(words) || words.length > 20) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // TODO 根据单词去词库里匹配列信息，未匹配到的使用默认值
+        TableSchema tableSchema = new TableSchema();
+        tableSchema.setTableName("my_table");
+        tableSchema.setTableComment("自动生成的表");
+        List<Field> fieldList = new ArrayList<>();
+        for (String word : words) {
+            // 使用默认值
+            fieldList.add(getDefaultField(word));
+        }
+        tableSchema.setFieldList(fieldList);
+        return tableSchema;
+    }
+
     private static void setColumnKey(SQLColumnDefinition columnDefinition, List<TableSchema.Field> fieldList) {
         // 创建并初始化 TableSchema.Field 对象
         TableSchema.Field field = new TableSchema.Field();
@@ -174,6 +197,21 @@ public class TableSchemaBuilder {
         } else {
             return "";
         }
+    }
+
+    private static Field getDefaultField(String word) {
+        final Field field = new Field();
+        field.setFieldName(word);
+        field.setFieldType("text");
+        field.setDefaultValue("");
+        field.setNotNull(false);
+        field.setComment(word);
+        field.setPrimaryKey(false);
+        field.setAutoIncrement(false);
+        field.setMockType("");
+        field.setMockParams("");
+        field.setOnUpdate("");
+        return field;
     }
 
 
