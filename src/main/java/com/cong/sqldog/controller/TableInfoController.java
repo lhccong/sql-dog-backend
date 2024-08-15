@@ -2,12 +2,9 @@ package com.cong.sqldog.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cong.sqldog.common.*;
 import com.cong.sqldog.constant.UserConstant;
-import com.cong.sqldog.core.sqlgenerate.builder.SqlBuilder;
-import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
@@ -17,7 +14,6 @@ import com.cong.sqldog.model.entity.TableInfo;
 import com.cong.sqldog.model.vo.TableInfoVo;
 import com.cong.sqldog.service.TableInfoService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -163,8 +159,8 @@ public class TableInfoController {
      * @param id 同上
      * @return {@link BaseResponse }<{@link String }>
      */
-    @PostMapping("/generate/sql")
-    public BaseResponse<String> generateCreateSql(@RequestBody long id) {
+    @GetMapping("/generate/sql")
+    public BaseResponse<String> generateCreateSql(long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
