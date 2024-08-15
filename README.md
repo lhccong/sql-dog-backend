@@ -8,6 +8,7 @@
 <div align="center">
     <a href=""><img src="https://img.shields.io/badge/github-项目地址-yellow.svg?style=plasticr"></a>
     <a href=""><img src="https://img.shields.io/badge/前端-项目地址-blueviolet.svg?style=plasticr"></a>
+    <a href=""><img src="https://img.shields.io/badge/前端-项目地址-blueviolet.svg?style=plasticr"></a>
 </div>
 
 
@@ -60,9 +61,19 @@ SQL Dog 是一款基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于
     <img src="./doc/img/img_1.png" width="780" />
 </p>
 
+### 优化建议
+<p align="center">
+    <img src="./doc/img/img_5.png" width="780" />
+</p>
+
 ### 代码生成
 <p align="center">
     <img src="./doc/img/img_2.png" width="780" />
+</p>
+
+### 表大全
+<p align="center">
+    <img src="./doc/img/img_6.png" width="780" />
 </p>
 
 ### 选择关卡
