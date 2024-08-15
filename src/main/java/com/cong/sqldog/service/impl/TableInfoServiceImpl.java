@@ -9,6 +9,8 @@ import com.cong.sqldog.common.DeleteRequest;
 import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.common.ReviewRequest;
 import com.cong.sqldog.constant.CommonConstant;
+import com.cong.sqldog.core.sqlgenerate.builder.SqlBuilder;
+import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.exception.ThrowUtils;
 import com.cong.sqldog.mapper.TableInfoMapper;
@@ -363,5 +365,17 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         boolean result = this.updateById(tableInfo);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return true;
+    }
+
+    @Override
+    public String generateCreateSql(long id) {
+        TableInfo tableInfo = this.getById(id);
+        if (tableInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        TableSchema tableSchema = JSONUtil.toBean(tableInfo.getContent(), TableSchema.class);
+        SqlBuilder sqlBuilder = new SqlBuilder();
+
+        return sqlBuilder.buildCreateTableSql(tableSchema);
     }
 }
