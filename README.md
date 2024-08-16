@@ -130,3 +130,10 @@ SQL Dog 是一款基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于
     <img src="./doc/img/img_7.png" width="780" />
 </p>
 
+## 致谢
+
+感谢开源项目：
+
+sql-father：https://github.com/liyupi/sql-father-backend-public
+
+sql-mother：https://github.com/liyupi/sql-mother
