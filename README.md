@@ -28,12 +28,13 @@ SQL Dog 是一款基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于
 - **前端项目仓库**：[sql-dog-frontend](https://github.com/lhccong/sql-dog-frontend)
 - **后端项目仓库**：[sql-dog-backend](https://github.com/lhccong/sql-dog-backend)
 
-## 我们做了哪些改进
+## 做了哪些改进🔍
+
 1. 生成的 Json 数据格式更加精准，之前只能生成 String 类型，现在能根据不同的字段类型进行生成。
 2. 新增了 SQL 执行计划的分析，能让用户了解自己的 SQL 还有什么优化空间。
 3. 整合了 sql-mother 、sql-father ，提供一站式 SQL 练习平台，练完 SQL 建 SQL，一站式服务。
 4. 我们能生成 ER 图，通过 plantUML 代码的形式。
-5. 基于 TDD 的开发模式，每个功能都可以通过对应的单元测试来进行。
+5. 后端开发遵循 TDD 开发模式，保证代码质量，使用 mock 来进行单元测试。
 
 ## 技术选型
 
@@ -55,13 +56,6 @@ SQL Dog 是一款基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于
 6. sql-slow-mirror（自研 SQL 分析工具，项目地址：https://github.com/lhccong/sql-slow-mirror ）
 7. Druid（SQL 解析）
 
-## 做了哪些改进🔍
-
-1. 生成的 Json 数据格式更加精准，之前只能生成 String 类型，现在能根据不同的字段类型进行生成。
-2. 新增了 SQL 执行计划的分析，能让用户了解自己的 SQL 还有什么优化空间。
-3. 整合了 sql-mother 、sql-father ，提供一站式 SQL 练习平台，练完 SQL 建 SQL，一站式服务。
-4. 我们能生成 ER 图，通过 plantUML 代码的形式。
-5. 后端开发遵循 TDD 开发模式，保证代码质量，使用 mock 来进行单元测试。
 
 ## 需要攻克的点
 
