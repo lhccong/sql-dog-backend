@@ -3,11 +3,9 @@ package com.cong.sqldog.controller;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cong.sqldog.infrastructure.common.BaseResponse;
-import com.cong.sqldog.infrastructure.common.DeleteRequest;
-import com.cong.sqldog.infrastructure.common.ResultUtils;
-import com.cong.sqldog.infrastructure.common.ReviewRequest;
+import com.cong.sqldog.common.*;
 import com.cong.sqldog.constant.UserConstant;
+import com.cong.sqldog.exception.BusinessException;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoQueryRequest;
@@ -153,5 +151,19 @@ public class TableInfoController {
     public BaseResponse<Boolean> doTableInfoReview(@RequestBody ReviewRequest reviewRequest) {
         boolean result = tableInfoService.doTableInfoReview(reviewRequest);
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 生成创建表的 SQL
+     *
+     * @param id 同上
+     * @return {@link BaseResponse }<{@link String }>
+     */
+    @GetMapping("/generate/sql")
+    public BaseResponse<String> generateCreateSql(long id) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        return ResultUtils.success(tableInfoService.generateCreateSql(id));
     }
 }

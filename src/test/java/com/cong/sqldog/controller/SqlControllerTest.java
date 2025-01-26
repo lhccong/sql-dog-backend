@@ -5,6 +5,7 @@ import cn.hutool.json.JSONUtil;
 import com.cong.sqldog.infrastructure.common.BaseResponse;
 import com.cong.sqldog.common.TestBaseByLogin;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
+import com.cong.sqldog.model.dto.sql.GenerateBySqlRequest;
 import com.cong.sqldog.model.vo.sql.GenerateVO;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
@@ -38,6 +39,42 @@ class SqlControllerTest extends TestBaseByLogin {
 
 
         checkData(generateVO);
+    }
+
+    @Test
+    void testGenerateSchemaData() throws Exception {
+
+        GenerateBySqlRequest generateBySqlRequest = new GenerateBySqlRequest();
+        generateBySqlRequest.setSql("-- 用户表\n" +
+                "create table if not exists user_info\n" +
+                "(\n" +
+                "    id           bigint auto_increment comment 'id' primary key,\n" +
+                "    userAccount  varchar(256)                           not null comment '账号',\n" +
+                "    userPassword varchar(512)                           not null comment '密码',\n" +
+                "    unionId      varchar(256)                           null comment '微信开放平台id',\n" +
+                "    mpOpenId     varchar(256)                           null comment '公众号openId',\n" +
+                "    userName     varchar(256)                           null comment '用户昵称',\n" +
+                "    userAvatar   varchar(1024)                          null comment '用户头像',\n" +
+                "    userProfile  varchar(512)                           null comment '用户简介',\n" +
+                "    userRole     varchar(256) default 'user'            not null comment '用户角色：user/admin/ban',\n" +
+                "    createTime   datetime     default CURRENT_TIMESTAMP not null comment '创建时间',\n" +
+                "    updateTime   datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',\n" +
+                "    isDelete     tinyint      default 0                 not null comment '是否删除',\n" +
+                "    index idx_unionId (unionId)\n" +
+                ") comment '用户' collate = utf8mb4_unicode_ci;\n");
+        // 发送请求并验证结果
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/sql/get/schema/sql")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JSONUtil.toJsonStr(generateBySqlRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+        resultActions.andReturn().getResponse().setCharacterEncoding("UTF-8");
+        String content = resultActions.andReturn().getResponse().getContentAsString();
+        BaseResponse<TableSchema> baseResponse = JSONUtil.toBean(content, new TypeReference<>() {
+        }, false);
+        TableSchema tableSchema = baseResponse.getData();
+        Assertions.assertNotNull(tableSchema);
     }
 
     @Test

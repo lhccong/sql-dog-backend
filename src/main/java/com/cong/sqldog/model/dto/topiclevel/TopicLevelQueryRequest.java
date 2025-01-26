@@ -57,6 +57,26 @@ public class TopicLevelQueryRequest extends PageRequest implements Serializable 
     private String type;
 
     /**
+     * 审核状态：0-待审核, 1-通过, 2-拒绝
+     */
+    private Integer reviewStatus;
+
+    /**
+     * 审核信息
+     */
+    private String reviewMessage;
+
+    /**
+     * 上一个关卡 id
+     */
+    private Long preLevelId;
+
+    /**
+     * 下一个关卡 id
+     */
+    private Long nextLevelId;
+
+    /**
      * 搜索词
      */
     private String searchText;

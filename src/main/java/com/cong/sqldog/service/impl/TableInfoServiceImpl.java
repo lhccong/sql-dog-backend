@@ -5,25 +5,27 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cong.sqldog.infrastructure.common.DeleteRequest;
-import com.cong.sqldog.infrastructure.common.ErrorCode;
-import com.cong.sqldog.infrastructure.common.ReviewRequest;
+import com.cong.sqldog.common.DeleteRequest;
+import com.cong.sqldog.common.ErrorCode;
+import com.cong.sqldog.common.ReviewRequest;
 import com.cong.sqldog.constant.CommonConstant;
-import com.cong.sqldog.infrastructure.exception.BusinessException;
-import com.cong.sqldog.infrastructure.exception.ThrowUtils;
-import com.cong.sqldog.infrastructure.mapper.TableInfoMapper;
+import com.cong.sqldog.core.sqlgenerate.builder.SqlBuilder;
+import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
+import com.cong.sqldog.exception.BusinessException;
+import com.cong.sqldog.exception.ThrowUtils;
+import com.cong.sqldog.mapper.TableInfoMapper;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoQueryRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoUpdateRequest;
 import com.cong.sqldog.model.entity.TableInfo;
-import com.cong.sqldog.domain.user.entity.User;
+import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
 import com.cong.sqldog.model.vo.TableInfoVo;
-import com.cong.sqldog.interfaces.vo.user.UserVO;
+import com.cong.sqldog.model.vo.UserVO;
 import com.cong.sqldog.service.TableInfoService;
 import com.cong.sqldog.service.UserService;
-import com.cong.sqldog.infrastructure.utils.SqlUtils;
+import com.cong.sqldog.utils.SqlUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -227,7 +229,7 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         TableInfo oldTableInfo = this.getById(id);
         ThrowUtils.throwIf(oldTableInfo == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!oldTableInfo.getId().equals(user.getId()) && !userService.isAdmin()) {
+        if (!oldTableInfo.getUserId().equals(user.getId()) && !userService.isAdmin()) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 操作数据库
@@ -312,7 +314,7 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         Page<TableInfo> tableInfoPage = this.page(new Page<>(current, size),
-                this.getQueryWrapper(tableInfoQueryRequest));
+                this.getQueryWrapper(tableInfoQueryRequest).eq("reviewStatus", ReviewStatusEnum.PASS.getValue()));
         // 获取封装类
         return this.getTableInfoVoPage(tableInfoPage);
     }
@@ -363,5 +365,17 @@ public class TableInfoServiceImpl extends ServiceImpl<TableInfoMapper, TableInfo
         boolean result = this.updateById(tableInfo);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return true;
+    }
+
+    @Override
+    public String generateCreateSql(long id) {
+        TableInfo tableInfo = this.getById(id);
+        if (tableInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        TableSchema tableSchema = JSONUtil.toBean(tableInfo.getContent(), TableSchema.class);
+        SqlBuilder sqlBuilder = new SqlBuilder();
+
+        return sqlBuilder.buildCreateTableSql(tableSchema);
     }
 }

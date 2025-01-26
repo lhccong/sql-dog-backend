@@ -6,25 +6,22 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cong.sqldog.infrastructure.common.DeleteRequest;
-import com.cong.sqldog.infrastructure.common.ErrorCode;
+import com.cong.sqldog.common.DeleteRequest;
+import com.cong.sqldog.common.ErrorCode;
 import com.cong.sqldog.constant.CommonConstant;
 import com.cong.sqldog.constant.FieldInfoReviewStatusConstant;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
-import com.cong.sqldog.infrastructure.exception.BusinessException;
-import com.cong.sqldog.infrastructure.exception.ThrowUtils;
-import com.cong.sqldog.infrastructure.mapper.FieldInfoMapper;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;
-import com.cong.sqldog.model.dto.fieldinfo.FieldInfoUpdateRequest;
+import com.cong.sqldog.exception.BusinessException;
+import com.cong.sqldog.exception.ThrowUtils;
+import com.cong.sqldog.mapper.FieldInfoMapper;
+import com.cong.sqldog.model.dto.fieldinfo.*;
 import com.cong.sqldog.model.entity.FieldInfo;
-import com.cong.sqldog.domain.user.entity.User;
+import com.cong.sqldog.model.entity.User;
 import com.cong.sqldog.model.enums.ReviewStatusEnum;
 import com.cong.sqldog.model.vo.FieldInfoVO;
 import com.cong.sqldog.service.FieldInfoService;
 import com.cong.sqldog.service.UserService;
-import com.cong.sqldog.infrastructure.utils.SqlUtils;
+import com.cong.sqldog.utils.SqlUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -65,7 +62,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         ThrowUtils.throwIf(fieldInfoAddRequest == null, ErrorCode.PARAMS_ERROR);
 
         // 校验字段信息是否合法
-        this.processFieldInfo(fieldInfoAddRequest.getContent(),TableSchema.Field.class);
+        this.processFieldInfo(fieldInfoAddRequest.getContent(), TableSchema.Field.class);
 
         // 实体类和 DTO 转换
         FieldInfo fieldInfo = new FieldInfo();
@@ -102,7 +99,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         ThrowUtils.throwIf(oldFieldInfo == null, ErrorCode.NOT_FOUND_ERROR);
 
         // 仅本人或管理员可删除
-        if (!oldFieldInfo.getId().equals(user.getId()) && !userService.isAdmin()) {
+        if (!oldFieldInfo.getUserId().equals(user.getId()) && !userService.isAdmin()) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
 
@@ -161,7 +158,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         }
 
         // 校验字段信息是否合法
-        this.processFieldInfo(fieldInfoEditRequest.getContent(),TableSchema.Field.class);
+        this.processFieldInfo(fieldInfoEditRequest.getContent(), TableSchema.Field.class);
 
         // 判断是否存在
         long id = fieldInfoEditRequest.getId();
@@ -170,8 +167,8 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
 
         // 判断状态是否异常
         if (oldFieldInfo.getReviewStatus().equals(FieldInfoReviewStatusConstant.PASSED) ||
-                oldFieldInfo.getReviewStatus().equals(FieldInfoReviewStatusConstant.REJECTED)){
-            throw new BusinessException(ErrorCode.PARAMS_ERROR,"只能编辑待审批的字段信息");
+                oldFieldInfo.getReviewStatus().equals(FieldInfoReviewStatusConstant.REJECTED)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "只能编辑待审批的字段信息");
         }
 
         // 在此处将实体类和 DTO 进行转换
@@ -206,7 +203,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         }
 
         // 校验字段信息是否合法
-        this.processFieldInfo(fieldInfoUpdateRequest.getContent(),TableSchema.Field.class);
+        this.processFieldInfo(fieldInfoUpdateRequest.getContent(), TableSchema.Field.class);
 
         // 判断是否存在
         long id = fieldInfoUpdateRequest.getId();
@@ -234,6 +231,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
 
     /**
      * 根据 id 获取字段信息
+     *
      * @param id 字段信息 id
      * @return 字段信息
      */
@@ -279,7 +277,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         // 查询数据库
         Page<FieldInfo> tableInfoPage = this.page(new Page<>(current, size),
-                this.getQueryWrapper(fieldInfoQueryRequest));
+                this.getQueryWrapper(fieldInfoQueryRequest).eq("reviewStatus", ReviewStatusEnum.PASS.getValue()));
         // 获取封装类
         return this.getFieldInfoVoPage(tableInfoPage);
     }
@@ -306,6 +304,33 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         return this.getFieldInfoVoPage(tableInfoPage);
     }
 
+    /**
+     * 根据 id 更改审批字段状态
+     *
+     * @param fieldInfoEditReviewStatusRequest 更改字段状态信息请求
+     * @return Boolean
+     */
+    @Override
+    public Boolean editReviewStatus(FieldInfoEditReviewStatusRequest fieldInfoEditReviewStatusRequest) {
+
+        // id 小于等于 0，报错请求参数错误
+        Long id = fieldInfoEditReviewStatusRequest.getId();
+        // 参数为空，id 小于等于 0，报错请求参数错误
+        ThrowUtils.throwIf(id == null || id <= 0, ErrorCode.PARAMS_ERROR,"请求 id 不存在");
+
+        // 获取 id 查询字段信息
+        FieldInfo fieldInfo = this.getById(id);
+        ThrowUtils.throwIf(fieldInfo == null, ErrorCode.NOT_FOUND_ERROR,"字段信息不存在");
+
+        // 设置字段状态及审核信息
+        fieldInfo.setReviewStatus(fieldInfoEditReviewStatusRequest.getReviewStatus());
+        fieldInfo.setReviewMessage(fieldInfoEditReviewStatusRequest.getReviewMessage());
+
+        // 更新字段信息
+        boolean result = this.updateById(fieldInfo);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return true;
+    }
     // region 工具方法
 
 
@@ -313,7 +338,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
      * 数据校验
      *
      * @param fieldInfo 字段信息
-     * @param result void
+     * @param result    void
      */
     public void validFieldInfo(FieldInfo fieldInfo, boolean result) {
         // 参数不能为 null
@@ -420,7 +445,8 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
         Map<String, Class<?>> validFieldTypes = getValidFieldTypes(fieldClass);
 
         // 校验字段
-        for (String key : jsonObject.keySet()) {
+        for (Map.Entry<String, Object> stringObjectEntry : jsonObject.entrySet()) {
+            String key = stringObjectEntry.getKey();
             if (!validFieldTypes.containsKey(key)) {
                 // 发现未知字段，立即抛出异常
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "包含未知字段: " + key);
@@ -428,20 +454,21 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
 
             // 获取字段类型
             Class<?> fieldType = validFieldTypes.get(key);
-            Object value = jsonObject.get(key);
+            Object value = stringObjectEntry.getValue();
 
             // 验证值类型是否匹配字段类型
             if (!isValidType(value, fieldType)) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "字段 " + key + " 的值类型不匹配，期望类型: " + fieldType.getSimpleName());
             }
         }
+
     }
 
     /**
      * 动态获取有效字段及其类型的映射
      *
      * @param clazz 要分析的类
-     * @return Map<String, Class<?>>
+     * @return Map<String, Class < ?>>
      */
     private static Map<String, Class<?>> getValidFieldTypes(Class<?> clazz) {
         Map<String, Class<?>> fieldTypes = new HashMap<>();
@@ -454,7 +481,7 @@ public class FieldInfoServiceImpl extends ServiceImpl<FieldInfoMapper, FieldInfo
     /**
      * 验证值的类型是否匹配字段的类型
      *
-     * @param value 值
+     * @param value     值
      * @param fieldType 字段类型
      * @return 是否匹配
      */

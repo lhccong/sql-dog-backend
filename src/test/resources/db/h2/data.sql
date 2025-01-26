@@ -25,10 +25,11 @@ VALUES (1820740567387107328, '测试测试表-2', '[{"id":"12345"},{"name":"shin
         1816001696590692353, '2024-08-06 08:35:53', '2024-08-06 08:35:53', 0);
 
 -- topic_level 表语句
-INSERT INTO topic_level(id, title, initSQL, mdContent, defaultSQL, answer, hint, type, preLevelId, nextLevelId, userId, createTime, updateTime, isDelete)
-VALUES (100, '测试测试表', 'select * from table_info', 'test', 'select * from table_info','select * from table_info', 'test', 'custom', 99, 101, 1818965526718836738, '2024-08-06 08:35:53', '2024-08-06 08:35:53', 0);
-INSERT INTO topic_level(id, title, initSQL, mdContent, defaultSQL, answer, hint, type, preLevelId, nextLevelId, userId, createTime, updateTime, isDelete)
-VALUES (101, '测试测试表', 'select * from table_info', 'test', 'select * from table_info','select * from table_info', 'test', 'custom', 99, 101, 1818965526718836738, '2024-08-06 08:35:53', '2024-08-06 08:35:53', 0);
+INSERT INTO topic_level(id, title, initSQL, mdContent, defaultSQL, answer, hint, type, reviewStatus, reviewMessage, preLevelId, nextLevelId, userId, createTime, updateTime, isDelete)
+VALUES (100, '测试测试表', 'select * from table_info', 'test', 'select * from table_info', 'select * from table_info', 'test', 'custom', 0, '', 99, 101, 1818965526718836738, '2024-08-06 08:35:53', '2024-08-06 08:35:53', 0);
+
+INSERT INTO topic_level(id, title, initSQL, mdContent, defaultSQL, answer, hint, type, reviewStatus, reviewMessage, preLevelId, nextLevelId, userId, createTime, updateTime, isDelete)
+VALUES (101, '测试测试表', 'select * from table_info', 'test', 'select * from table_info', 'select * from table_info', 'test', 'system', 1, '', 99, 101, 1818965526718836738, '2024-08-06 08:35:53', '2024-08-06 08:35:53', 0);
 
 -- execute_info 表语句
 INSERT INTO execute_info(id, sqlContent, sqlAnalyzeResult, reviewStatus, reviewMessage, userId, createTime, updateTime, isDelete)

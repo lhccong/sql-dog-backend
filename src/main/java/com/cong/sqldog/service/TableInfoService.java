@@ -96,4 +96,12 @@ public interface TableInfoService extends IService<TableInfo> {
      * 表信息状态审核
      */
     Boolean doTableInfoReview( ReviewRequest reviewRequest);
+
+    /**
+     * 生成 CREATE SQL
+     *
+     * @param id 同上
+     * @return {@link String }
+     */
+    String generateCreateSql(long id);
 }

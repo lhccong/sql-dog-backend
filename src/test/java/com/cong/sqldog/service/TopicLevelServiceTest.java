@@ -2,10 +2,12 @@ package com.cong.sqldog.service;
 
 import cn.dev33.satoken.stp.StpLogic;
 import cn.hutool.json.JSONUtil;
-import com.cong.sqldog.infrastructure.common.DeleteRequest;
+import com.cong.sqldog.common.DeleteRequest;
+import com.cong.sqldog.common.ReviewRequest;
 import com.cong.sqldog.common.TestBase;
 import com.cong.sqldog.model.dto.topiclevel.*;
-import com.cong.sqldog.domain.user.entity.User;
+import com.cong.sqldog.model.entity.User;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,6 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
@@ -33,7 +38,7 @@ class TopicLevelServiceTest extends TestBase {
     @BeforeEach
     void setUp() {
         User mockUser = new User();
-        mockUser.setId(1816001696590692353L);
+        mockUser.setId(1818965526718836738L);
         mockUser.setUserRole("admin");
 
         // 模拟 getLoginUser 方法返回 mockUser
@@ -63,7 +68,8 @@ class TopicLevelServiceTest extends TestBase {
                         .content(JSONUtil.toJsonStr(topicLevelAddRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
     }
 
     /**
@@ -100,8 +106,8 @@ class TopicLevelServiceTest extends TestBase {
                         .content(JSONUtil.toJsonStr(topicLevelEditRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(true));
-
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
     }
 
     /**
@@ -121,8 +127,8 @@ class TopicLevelServiceTest extends TestBase {
                         .content(JSONUtil.toJsonStr(topicLevelUpdateRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(true));
-
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
     }
 
     /**
@@ -133,12 +139,19 @@ class TopicLevelServiceTest extends TestBase {
 
         // 发送查询请求并验证结果
         mockMvc.perform(MockMvcRequestBuilders.get("/topicLevel/get/vo")
-                        .param("id", String.valueOf(101L))
+                        .param("id", String.valueOf(100L))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                // 校验 code 字段的值是否为 0
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
-
+                // 确保 data 字段不为空
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty())
+                // 校验 data 对象中的 id 字段的值是否正确
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value("100"))
+                // 校验 data 对象中的 title 字段的值是否正确
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("测试测试表"))
+                // 校验 message 字段的值是否为 ok
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
     }
 
     /**
@@ -157,8 +170,18 @@ class TopicLevelServiceTest extends TestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JSONUtil.toJsonStr(topicLevelQueryRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                // 校验 code 字段的值是否为 0
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+                // 确保 data 字段不为空
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty())
+                // 确保 records 字段是一个数组
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records").isArray())
+                // 校验 records 数组中第一个对象的 id 字段的值是否正确
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].id").value("100"))
+                // 校验 records 数组中第一个对象的 title 字段的值是否正确
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].title").value("测试测试表"))
+                // 校验 message 字段的值是否为 "ok"
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
     }
 
     /**
@@ -177,8 +200,18 @@ class TopicLevelServiceTest extends TestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JSONUtil.toJsonStr(topicLevelQueryRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                // 校验 code 字段的值是否为 0
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+                // 确保 data 字段不为空
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty())
+                // 确保 records 字段是一个数组
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records").isArray())
+                // 校验 records 数组中第一个对象的 id 字段的值是否正确
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].id").value("100"))
+                // 校验 records 数组中第一个对象的 title 字段的值是否正确
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].title").value("测试测试表"))
+                // 校验 message 字段的值是否为 "ok"
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
     }
 
     /**
@@ -200,8 +233,18 @@ class TopicLevelServiceTest extends TestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(JSONUtil.toJsonStr(topicLevelQueryRequest)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                // 校验 code 字段的值是否为 0
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+                // 确保 data 字段不为空
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty())
+                // 确保 records 字段是一个数组
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records").isArray())
+                // 校验 records 数组中第一个对象的 id 字段的值是否正确
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].id").value("100"))
+                // 校验 records 数组中第一个对象的 title 字段的值是否正确
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].title").value("测试测试表"))
+                // 校验 message 字段的值是否为 "ok"
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
     }
 
     /**
@@ -212,6 +255,7 @@ class TopicLevelServiceTest extends TestBase {
         TopicQueryRequest topicQueryRequest = new TopicQueryRequest();
         // 设置分页参数
         topicQueryRequest.setCurrent(1);
+        topicQueryRequest.setPageSize(10);
 
         // 发送分页查询请求并验证结果
         mockMvc.perform(MockMvcRequestBuilders.post("/topicLevel/list/page/topic")
@@ -219,6 +263,59 @@ class TopicLevelServiceTest extends TestBase {
                         .content(JSONUtil.toJsonStr(topicQueryRequest))) // 将整个对象序列化为JSON字符串并作为请求体发送
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].id").value("100"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].title").value("测试测试表"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0].type").value("custom"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
+    }
+
+    /**
+     * 测试 getTopicLevelByType 方法
+     */
+    @Test
+    void getTopicLevelByTypeTest() throws Exception {
+        // 准备测试数据
+        TopicLevelQueryRequest topicLevelQueryRequest = new TopicLevelQueryRequest();
+        // 设置分页参数
+        topicLevelQueryRequest.setCurrent(1);
+        topicLevelQueryRequest.setPageSize(10);
+        topicLevelQueryRequest.setType("custom");
+
+        // 发送分页查询请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.post("/topicLevel/list/page")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JSONUtil.toJsonStr(topicLevelQueryRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").isNotEmpty())
+                .andExpect(result -> {
+                    // 获取返回结果中的所有 type 字段的值
+                    List<String> types = JsonPath.read(result.getResponse().getContentAsString(), "$.data.records[*].type");
+                    // 断言所有 type 都是 "custom"
+                    for (String type : types) {
+                        assertEquals("custom", type, "Type is matched");
+                    }
+                });
+    }
+
+    /**
+     *  测试 doReview 方法
+     */
+    @Test
+    void doReviewTest() throws Exception {
+        // 准备测试数据
+        ReviewRequest reviewRequest = new ReviewRequest();
+        reviewRequest.setId(100L);
+        reviewRequest.setReviewStatus(2);
+
+        // 发送请求并验证结果
+        mockMvc.perform(MockMvcRequestBuilders.post("/topicLevel/review")
+                        .contentType(MediaType.APPLICATION_JSON) // 设置Content-Type为application/json
+                        .content(JSONUtil.toJsonStr(reviewRequest)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("ok"));
     }
 }

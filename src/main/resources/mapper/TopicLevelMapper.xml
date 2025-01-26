@@ -29,6 +29,7 @@
     <select id="selectTopicLevelsByPage" resultType="com.cong.sqldog.model.vo.TopicVo">
         SELECT id,title,type FROM topic_level
         <where>
+            AND isDelete = 0 AND reviewStatus =1
             <if test="topicQueryRequest.id != null">
                 AND id = #{topicQueryRequest.id}
             </if>
