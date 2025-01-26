@@ -2,7 +2,7 @@ package com.cong.sqldog.core.sqlgenerate.generator;
 
 import cn.hutool.core.date.DateUtil;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
-import com.cong.sqldog.utils.IdWorkerUtil;
+import com.cong.sqldog.infrastructure.utils.IdWorkerUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

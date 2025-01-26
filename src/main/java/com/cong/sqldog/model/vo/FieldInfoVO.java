@@ -1,5 +1,6 @@
 package com.cong.sqldog.model.vo;
 
+import com.cong.sqldog.interfaces.vo.user.UserVO;
 import com.cong.sqldog.model.entity.FieldInfo;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;

@@ -2,7 +2,7 @@ package com.cong.sqldog.controller;
 
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
-import com.cong.sqldog.common.BaseResponse;
+import com.cong.sqldog.infrastructure.common.BaseResponse;
 import com.cong.sqldog.common.TestBaseByLogin;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.model.vo.sql.GenerateVO;

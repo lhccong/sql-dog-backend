@@ -3,10 +3,10 @@ package com.cong.sqldog.service.impl;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpUtil;
-import com.cong.sqldog.common.ErrorCode;
+import com.cong.sqldog.infrastructure.common.ErrorCode;
 import com.cong.sqldog.constant.SystemConstants;
-import com.cong.sqldog.exception.BusinessException;
-import com.cong.sqldog.model.entity.User;
+import com.cong.sqldog.infrastructure.exception.BusinessException;
+import com.cong.sqldog.domain.user.entity.User;
 import com.cong.sqldog.service.UserService;
 import org.springframework.stereotype.Component;
 

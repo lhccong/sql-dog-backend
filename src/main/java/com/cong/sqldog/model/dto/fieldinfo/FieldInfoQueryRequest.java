@@ -1,10 +1,9 @@
 package com.cong.sqldog.model.dto.fieldinfo;
 
-import com.cong.sqldog.common.PageRequest;
+import com.cong.sqldog.infrastructure.common.PageRequest;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 查询字段信息请求

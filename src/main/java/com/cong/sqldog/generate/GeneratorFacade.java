@@ -1,11 +1,11 @@
 package com.cong.sqldog.generate;
 
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.cong.sqldog.common.ErrorCode;
+import com.cong.sqldog.infrastructure.common.ErrorCode;
 import com.cong.sqldog.core.sqlgenerate.builder.*;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema.Field;
-import com.cong.sqldog.exception.BusinessException;
+import com.cong.sqldog.infrastructure.exception.BusinessException;
 import com.cong.sqldog.model.vo.sql.GenerateVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

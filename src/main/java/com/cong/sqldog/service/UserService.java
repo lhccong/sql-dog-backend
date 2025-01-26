@@ -2,11 +2,11 @@ package com.cong.sqldog.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cong.sqldog.model.dto.user.UserQueryRequest;
-import com.cong.sqldog.model.entity.User;
-import com.cong.sqldog.model.vo.LoginUserVO;
-import com.cong.sqldog.model.vo.TokenLoginUserVo;
-import com.cong.sqldog.model.vo.UserVO;
+import com.cong.sqldog.interfaces.dto.user.UserQueryRequest;
+import com.cong.sqldog.domain.user.entity.User;
+import com.cong.sqldog.interfaces.vo.user.LoginUserVO;
+import com.cong.sqldog.interfaces.vo.user.TokenLoginUserVo;
+import com.cong.sqldog.interfaces.vo.user.UserVO;
 
 import java.util.List;
 

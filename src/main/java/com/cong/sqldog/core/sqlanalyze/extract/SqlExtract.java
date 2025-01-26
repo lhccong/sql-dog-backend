@@ -2,7 +2,7 @@ package com.cong.sqldog.core.sqlanalyze.extract;
 
 import cn.hutool.core.collection.CollUtil;
 import com.cong.sqldog.core.sqlanalyze.config.SqlAnalysisConfig;
-import com.cong.sqldog.utils.MetaObjectUtil;
+import com.cong.sqldog.infrastructure.utils.MetaObjectUtil;
 import org.apache.ibatis.executor.statement.PreparedStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;

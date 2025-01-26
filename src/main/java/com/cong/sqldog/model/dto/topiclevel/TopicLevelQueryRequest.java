@@ -1,6 +1,6 @@
 package com.cong.sqldog.model.dto.topiclevel;
 
-import com.cong.sqldog.common.PageRequest;
+import com.cong.sqldog.infrastructure.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

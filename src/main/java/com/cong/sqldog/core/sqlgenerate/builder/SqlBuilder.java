@@ -1,6 +1,6 @@
 package com.cong.sqldog.core.sqlgenerate.builder;
 
-import com.cong.sqldog.common.ErrorCode;
+import com.cong.sqldog.infrastructure.common.ErrorCode;
 import com.cong.sqldog.core.sqlgenerate.builder.sql.MySQLDialect;
 import com.cong.sqldog.core.sqlgenerate.builder.sql.SQLDialect;
 import com.cong.sqldog.core.sqlgenerate.builder.sql.SQLDialectFactory;
@@ -8,7 +8,7 @@ import com.cong.sqldog.core.sqlgenerate.model.enums.FieldTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.model.enums.MockTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema.Field;
-import com.cong.sqldog.exception.BusinessException;
+import com.cong.sqldog.infrastructure.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 

@@ -1,11 +1,11 @@
 package com.cong.sqldog.controller;
 
-import com.cong.sqldog.common.BaseResponse;
-import com.cong.sqldog.common.ErrorCode;
-import com.cong.sqldog.common.ResultUtils;
+import com.cong.sqldog.infrastructure.common.BaseResponse;
+import com.cong.sqldog.infrastructure.common.ErrorCode;
+import com.cong.sqldog.infrastructure.common.ResultUtils;
 import com.cong.sqldog.core.sqlgenerate.builder.TableSchemaBuilder;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
-import com.cong.sqldog.exception.BusinessException;
+import com.cong.sqldog.infrastructure.exception.BusinessException;
 import com.cong.sqldog.generate.GeneratorFacade;
 import com.cong.sqldog.model.dto.sql.GenerateBySqlRequest;
 import com.cong.sqldog.model.dto.sql.SqlAnalysisRequest;
@@ -13,7 +13,6 @@ import com.cong.sqldog.model.vo.sql.GenerateVO;
 import com.cong.sqldog.model.vo.sql.SqlAnalysisVO;
 import com.cong.sqldog.service.SqlService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

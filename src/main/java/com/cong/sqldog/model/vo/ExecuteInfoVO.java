@@ -1,13 +1,11 @@
 package com.cong.sqldog.model.vo;
 
-import cn.hutool.json.JSONUtil;
+import com.cong.sqldog.interfaces.vo.user.UserVO;
 import com.cong.sqldog.model.entity.ExecuteInfo;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 /**
  * SQL执行记录视图

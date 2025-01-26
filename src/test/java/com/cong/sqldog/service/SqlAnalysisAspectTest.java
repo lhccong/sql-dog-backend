@@ -8,7 +8,7 @@ import com.cong.sqldog.core.sqlanalyze.analysis.SqlAnalysisResultList;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreResult;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreService;
 import com.cong.sqldog.core.sqlanalyze.score.SqlScoreServiceRulesEngine;
-import com.cong.sqldog.utils.GsonUtil;
+import com.cong.sqldog.infrastructure.utils.GsonUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

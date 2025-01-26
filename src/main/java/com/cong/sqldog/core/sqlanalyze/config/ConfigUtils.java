@@ -1,6 +1,6 @@
 package com.cong.sqldog.core.sqlanalyze.config;
 
-import com.cong.sqldog.utils.MapUtils;
+import com.cong.sqldog.infrastructure.utils.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 

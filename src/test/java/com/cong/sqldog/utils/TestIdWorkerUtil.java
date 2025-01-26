@@ -1,6 +1,7 @@
 package com.cong.sqldog.utils;
 
 import com.cong.sqldog.common.TestBase;
+import com.cong.sqldog.infrastructure.utils.IdWorkerUtil;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

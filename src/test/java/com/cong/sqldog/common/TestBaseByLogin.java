@@ -1,7 +1,7 @@
 package com.cong.sqldog.common;
 
 import cn.dev33.satoken.stp.StpLogic;
-import com.cong.sqldog.model.entity.User;
+import com.cong.sqldog.domain.user.entity.User;
 import com.cong.sqldog.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;

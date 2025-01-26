@@ -1,9 +1,8 @@
 package com.cong.sqldog.controller;
 
 
-import com.cong.sqldog.config.GitHubConfig;
+import com.cong.sqldog.infrastructure.config.GitHubConfig;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import me.zhyd.oauth.request.AuthRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

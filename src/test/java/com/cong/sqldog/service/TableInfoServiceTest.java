@@ -2,13 +2,13 @@ package com.cong.sqldog.service;
 
 import cn.dev33.satoken.stp.StpLogic;
 import cn.hutool.json.JSONUtil;
-import com.cong.sqldog.common.DeleteRequest;
-import com.cong.sqldog.common.ReviewRequest;
+import com.cong.sqldog.infrastructure.common.DeleteRequest;
+import com.cong.sqldog.infrastructure.common.ReviewRequest;
 import com.cong.sqldog.common.TestBase;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoAddRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoEditRequest;
 import com.cong.sqldog.model.dto.tableinfo.TableInfoUpdateRequest;
-import com.cong.sqldog.model.entity.User;
+import com.cong.sqldog.domain.user.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

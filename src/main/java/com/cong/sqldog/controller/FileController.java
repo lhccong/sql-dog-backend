@@ -3,15 +3,15 @@ package com.cong.sqldog.controller;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.io.FileUtil;
-import com.cong.sqldog.common.BaseResponse;
-import com.cong.sqldog.common.ErrorCode;
-import com.cong.sqldog.common.ResultUtils;
+import com.cong.sqldog.infrastructure.common.BaseResponse;
+import com.cong.sqldog.infrastructure.common.ErrorCode;
+import com.cong.sqldog.infrastructure.common.ResultUtils;
 import com.cong.sqldog.constant.FileConstant;
 import com.cong.sqldog.constant.UserConstant;
-import com.cong.sqldog.exception.BusinessException;
-import com.cong.sqldog.manager.CosManager;
+import com.cong.sqldog.infrastructure.exception.BusinessException;
+import com.cong.sqldog.infrastructure.api.CosApi;
 import com.cong.sqldog.model.dto.file.UploadFileRequest;
-import com.cong.sqldog.model.entity.User;
+import com.cong.sqldog.domain.user.entity.User;
 import com.cong.sqldog.model.enums.FileUploadBizEnum;
 import com.cong.sqldog.service.UserService;
 
@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.Arrays;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -43,7 +42,7 @@ public class FileController {
     private UserService userService;
 
     @Resource
-    private CosManager cosManager;
+    private CosApi cosApi;
 
     /**
      * 上传文件
@@ -74,7 +73,7 @@ public class FileController {
             // 上传文件
             file = File.createTempFile(filepath, null);
             multipartFile.transferTo(file);
-            cosManager.putObject(filepath, file);
+            cosApi.putObject(filepath, file);
             // 返回可访问地址
             return ResultUtils.success(FileConstant.COS_HOST + filepath);
         } catch (Exception e) {

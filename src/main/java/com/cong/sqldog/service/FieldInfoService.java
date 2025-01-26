@@ -3,7 +3,7 @@ package com.cong.sqldog.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cong.sqldog.common.DeleteRequest;
+import com.cong.sqldog.infrastructure.common.DeleteRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoAddRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoEditRequest;
 import com.cong.sqldog.model.dto.fieldinfo.FieldInfoQueryRequest;

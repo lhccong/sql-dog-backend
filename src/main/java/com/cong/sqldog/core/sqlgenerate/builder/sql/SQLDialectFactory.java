@@ -2,8 +2,8 @@ package com.cong.sqldog.core.sqlgenerate.builder.sql;
 
 
 import cn.hutool.core.map.WeakConcurrentMap;
-import com.cong.sqldog.common.ErrorCode;
-import com.cong.sqldog.exception.BusinessException;
+import com.cong.sqldog.infrastructure.common.ErrorCode;
+import com.cong.sqldog.infrastructure.exception.BusinessException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,7 +1,7 @@
 package com.cong.sqldog.model.dto.tableinfo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.cong.sqldog.common.PageRequest;
+import com.cong.sqldog.infrastructure.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

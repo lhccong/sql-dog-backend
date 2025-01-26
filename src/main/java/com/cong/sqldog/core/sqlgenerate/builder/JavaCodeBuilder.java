@@ -1,7 +1,7 @@
 package com.cong.sqldog.core.sqlgenerate.builder;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import com.cong.sqldog.common.ErrorCode;
+import com.cong.sqldog.infrastructure.common.ErrorCode;
 import com.cong.sqldog.core.sqlgenerate.model.dto.JavaEntityGenerateDTO;
 import com.cong.sqldog.core.sqlgenerate.model.dto.JavaEntityGenerateDTO.FieldDTO;
 import com.cong.sqldog.core.sqlgenerate.model.dto.JavaObjectGenerateDTO;
@@ -10,7 +10,7 @@ import com.cong.sqldog.core.sqlgenerate.model.enums.FieldTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.model.enums.MockTypeEnum;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema;
 import com.cong.sqldog.core.sqlgenerate.schema.TableSchema.Field;
-import com.cong.sqldog.exception.BusinessException;
+import com.cong.sqldog.infrastructure.exception.BusinessException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import jakarta.annotation.Resource;
