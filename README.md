@@ -24,7 +24,7 @@ SQL Dog 是一款基于 SpringBoot + MySQL + SQL 慢镜🔍（自研）致力于
 
 ## 项目导航
 
-- **快速体验地址**：[SQL Dog](http://124.70.210.130:8099/)
+- **快速体验地址**：[SQL Dog](https://codebug.icu)
 - **前端项目仓库**：[sql-dog-frontend](https://github.com/lhccong/sql-dog-frontend)
 - **后端项目仓库**：[sql-dog-backend](https://github.com/lhccong/sql-dog-backend)
 
